@@ -1,6 +1,8 @@
 name: Extensions
 
-on: [pull_request]
+on:
+  schedule:
+    - cron: '30 01 * * *'
 
 jobs:
   test:
