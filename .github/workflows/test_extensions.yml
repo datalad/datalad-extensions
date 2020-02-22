@@ -41,14 +41,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install https://github.com/datalad/datalad/archive/master.zip
-    - name: Install ${{ matrix.extension }} extension
-      run: |
-        pip install ${{ matrix.extension }}
-      if: matrix.extension != 'datalad_crawler'
-    - name: Install ${{ matrix.extension }} extension
+    - name: Install ${{ matrix.extension }} extension ([devel])
       run: |
         pip install ${{ matrix.extension }}[devel]
-      if: matrix.extension == 'datalad_crawler'
+    - name: Install nose et al (just in case!)
+      run: |
+        pip install nose vcrpy mock
     - name: Install Singularity
       run: sudo eatmydata apt-get install singularity-container
       if: matrix.extension == 'datalad_container'
