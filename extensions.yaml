@@ -1,0 +1,29 @@
+# List of extensions.
+# Every extension could have a dict to customize in case of necessary
+# additional dependencies, or "non-standard" naming on PyPI or github
+#
+# name:
+#  pypi: <name on pypi, by default the same as the "name"
+#  package: <package name to be tested, by default the same as the "name"
+#  apt_depends:  # dependencies to install via APT necessary for testing
+#  - package1
+#  - ...
+#
+# If no customizations necessary, just place "None" as the value
+#
+# TODOs:
+# - Extensions ATM expected to provide [devel] extras_require. TODO: add
+#   option to avoid
+# - Add matrix run for "master" of the extension, not just released
+#   version.  For that would need github field with org/name unless
+#   it is "datalad/name"
+#
+
+extensions:
+ datalad_neuroimaging:
+ datalad_container:
+  apt_depends: [singularity-container]
+ datalad_metalad:
+ datalad_crawler:
+ # datalad_webapp,     # not developed ATM, not sure if of interest to keep track
+ # datalad_ukbiobank,  # yet to be renamed (issue filed), has no tests, so would fail

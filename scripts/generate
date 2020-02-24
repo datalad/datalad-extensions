@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+
+import os
+import os.path as op
+import glob
+import sys
+import yaml
+
+import jinja2
+
+top_path = op.dirname(op.dirname(__file__))
+
+# TODO: proper logigng etc
+
+def log(msg, *args):
+    print(msg % args)
+
+
+class ExtensionSpec(dict):
+
+    @property
+    def name(self):
+        return self["name"]
+
+    # Some properties which might tune the value
+    @property
+    def pypi(self):
+        return self.get("pypi", self.name)
+
+    @property
+    def package(self):
+        return self.get("package", self.name)
+
+    @property
+    def apt_depends(self):
+        return self.get("apt_depends", [])
+
+    #def __getattribute__(self, item):
+    #    return self[item]
+
+
+def jinja_render(tmpl, **kwargs):
+    """Custom renderer, so we first replace github actions ${{ with a
+    custom placeholder to avoid jinja tying to handle it
+    """
+    PLACEHOLDER = "[[["
+    if PLACEHOLDER in tmpl:
+        raise RuntimeError(
+            "Detected placeholder %r already being present in the text"
+            % PLACEHOLDER
+        )
+    tmpl_ = tmpl.replace("${{", PLACEHOLDER)
+    out_ = jinja2.Template(tmpl).render(**kwargs)
+    return out_.replace(PLACEHOLDER, "${{")
+
+
+def process_extension(ext_spec_dict):
+    ext_spec = ExtensionSpec(**ext_spec_dict)
+    render_kwargs = {
+        "extension": ext_spec,
+    }
+
+    # TODO: proper recursive
+    templates_dir = op.join(top_path, 'templates')
+    for tmpl_p in glob.glob(op.join(templates_dir, '.github/*/*')):
+        p = jinja_render(tmpl_p, **render_kwargs)
+        if p == tmpl_p:
+            log("Skipping %s since seems to be not extension specific", tmpl_p)
+            continue
+
+        with open(tmpl_p) as f:
+            tmpl = f.read()
+        rendered = jinja_render(tmpl, **render_kwargs)
+
+        if rendered == tmpl:
+            raise RuntimeError(
+                f"Rendered version of {tmpl_p} content is the same as template. "
+                "At the moment it is not expected"
+            )
+
+        prel_target = op.relpath(p, templates_dir)
+        p_target = op.join(top_path, prel_target)
+        if not op.exists(op.dirname(p_target)):
+            os.makedirs(op.dirname(p_target))
+
+        with open(p_target, "w") as f:
+            f.write(rendered)
+
+        log("Rendered %s", prel_target)
+
+
+def main(extensions):
+    with open(op.join(top_path, "extensions.yaml")) as f:
+        spec = yaml.load(f.read(), Loader=yaml.BaseLoader)
+    # ATM expecting only a single structure
+    assert list(spec.keys()) == ['extensions']
+    ext_specs = spec["extensions"]
+    for ext in extensions or list(ext_specs):
+        if not ext_specs[ext]:
+            # If it had nothing -- prepare it to be a dict
+            ext_specs[ext] = {}
+        ext_specs[ext]["name"] = ext
+        process_extension(ext_specs[ext])
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
