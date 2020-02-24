@@ -89,18 +89,60 @@ def process_extension(ext_spec_dict):
         log("Rendered %s", prel_target)
 
 
+def generate_README(ext_specs):
+    with open(op.join(top_path, "README.md"), "w") as f:
+        f.write("""\
+# DataLad Extensions
+
+DataLad extensions and their releases/status:
+""")
+
+        # TODO: link to per-extension cron-github-CI results
+        for ext in ext_specs:
+            edash = ext.replace("_", "-")
+            f.write(f"- [{ext}](https://github.com/datalad/{edash}):"
+                    f' [![Travis tests status](https://secure.travis-ci.org/datalad/{edash}.png?branch=master)](https://travis-ci.org/datalad/{edash})'
+                    f' [![codecov.io](https://codecov.io/github/datalad/{edash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{edash}?branch=master)'
+                    f' [![GitHub release](https://img.shields.io/github/release/datalad/{edash}.svg)](https://GitHub.com/datalad/{edash}/releases/)'
+                    f' [![PyPI version fury.io](https://badge.fury.io/py/{edash}.svg)](https://pypi.python.org/pypi/{edash}/)'
+                    f' [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/{edash}.svg)](http://isitmaintained.com/project/datalad/{edash} "Average time to resolve an issue")'
+                    f' [![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/{edash}.svg)](http://isitmaintained.com/project/datalad/{edash} "Percentage of issues still open")'
+                    f' ![Conda](https://anaconda.org/conda-forge/{edash}/badges/version.svg)'
+
+                    # [![DOI](
+                    # https://zenodo.org/badge/DOI/10.5281/zenodo.3368666.svg
+                    # )](https://doi.org/10.5281/zenodo.3368666)
+                    # f"[![Documentation](https://readthedocs.org/projects/{
+                    # edash}/badge/?version=latest)](http://{edash}.rtfd.org)"
+                    # f"[![License: MIT](
+                    # https://img.shields.io/badge/License-MIT-yellow.svg)](
+                    # https://opensource.org/licenses/MIT) 
+                    '\n'
+                    )
+
+
 def main(extensions):
+    ext_specs = load_ext_specs()
+
+    for ext in extensions or list(ext_specs):
+        process_extension(ext_specs[ext])
+
+    # We generate/update README.md for all extensions for now
+    generate_README(ext_specs)
+
+
+def load_ext_specs():
     with open(op.join(top_path, "extensions.yaml")) as f:
         spec = yaml.load(f.read(), Loader=yaml.BaseLoader)
     # ATM expecting only a single structure
     assert list(spec.keys()) == ['extensions']
     ext_specs = spec["extensions"]
-    for ext in extensions or list(ext_specs):
+    for ext in list(ext_specs):
         if not ext_specs[ext]:
             # If it had nothing -- prepare it to be a dict
             ext_specs[ext] = {}
         ext_specs[ext]["name"] = ext
-        process_extension(ext_specs[ext])
+    return ext_specs
 
 
 if __name__ == "__main__":
