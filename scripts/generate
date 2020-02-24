@@ -94,10 +94,6 @@ def generate_README(ext_specs):
         f.write("""\
 # DataLad Extensions
 
-Overall status against DataLad master:
-![](https://github.com/datalad/datalad-extensions/workflows/badge.svg).
-See [Actions](https://github.com/datalad/datalad-extensions/actions) for details.
-
 DataLad extensions and their releases/status:
 """)
 
@@ -105,6 +101,7 @@ DataLad extensions and their releases/status:
         for ext in ext_specs:
             edash = ext.replace("_", "-")
             f.write(f"- [{ext}](https://github.com/datalad/{edash}):"
+                    f' ![test-{ext}](https://github.com/datalad/datalad-extensions/workflows/test-{ext}/badge.svg)'
                     f' [![Travis tests status](https://secure.travis-ci.org/datalad/{edash}.png?branch=master)](https://travis-ci.org/datalad/{edash})'
                     f' [![codecov.io](https://codecov.io/github/datalad/{edash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{edash}?branch=master)'
                     f' [![GitHub release](https://img.shields.io/github/release/datalad/{edash}.svg)](https://GitHub.com/datalad/{edash}/releases/)'
