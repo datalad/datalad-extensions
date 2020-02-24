@@ -101,8 +101,8 @@ DataLad extensions and their releases/status:
         for ext in ext_specs:
             edash = ext.replace("_", "-")
             f.write(f"- [{ext}](https://github.com/datalad/{edash}):"
-                    f' ![test-{ext}](https://github.com/datalad/datalad-extensions/workflows/test-{ext}/badge.svg)'
-                    f' [![Travis tests status](https://secure.travis-ci.org/datalad/{edash}.png?branch=master)](https://travis-ci.org/datalad/{edash})'
+                    f' ![Released+DataLad master](https://github.com/datalad/datalad-extensions/workflows/test-{ext}/badge.svg)'
+                    f' [![master+Released Datalad](https://secure.travis-ci.org/datalad/{edash}.png?branch=master)](https://travis-ci.org/datalad/{edash})'
                     f' [![codecov.io](https://codecov.io/github/datalad/{edash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{edash}?branch=master)'
                     f' [![GitHub release](https://img.shields.io/github/release/datalad/{edash}.svg)](https://GitHub.com/datalad/{edash}/releases/)'
                     f' [![PyPI version fury.io](https://badge.fury.io/py/{edash}.svg)](https://pypi.python.org/pypi/{edash}/)'
