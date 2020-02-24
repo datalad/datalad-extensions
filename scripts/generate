@@ -94,6 +94,10 @@ def generate_README(ext_specs):
         f.write("""\
 # DataLad Extensions
 
+Overall status against DataLad master:
+![](https://github.com/datalad/datalad-extensions/workflows/badge.svg).
+See [Actions](https://github.com/datalad/datalad-extensions/actions) for details.
+
 DataLad extensions and their releases/status:
 """)
 
