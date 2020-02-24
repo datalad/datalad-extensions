@@ -1,7 +1,7 @@
 # DataLad Extensions
 
 Overall status against DataLad master:
-![](https://github.com/datalad/datalad-extensions/workflows/Extensions/badge.svg).
+![](https://github.com/datalad/datalad-extensions/workflows/badge.svg).
 See [Actions](https://github.com/datalad/datalad-extensions/actions) for details.
 
 DataLad extensions and their releases/status:
