@@ -1,3 +1,3 @@
 all:
-	./genREADME
 	scripts/generate
+	scripts/genREADME
