@@ -50,7 +50,7 @@ def jinja_render(tmpl, **kwargs):
             % PLACEHOLDER
         )
     tmpl_ = tmpl.replace("${{", PLACEHOLDER)
-    out_ = jinja2.Template(tmpl).render(**kwargs)
+    out_ = jinja2.Template(tmpl_).render(**kwargs)
     return out_.replace(PLACEHOLDER, "${{")
 
 
