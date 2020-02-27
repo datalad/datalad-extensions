@@ -43,7 +43,7 @@ jobs:
         pip install https://github.com/datalad/datalad/archive/master.zip
     - name: Install datalad_metalad extension from PyPI ([devel])
       run: |
-        pip install datalad_metalad[devel]
+        pip install datalad-metalad[devel]
     - name: Install nose et al (just in case!)
       run: |
         pip install nose vcrpy mock
