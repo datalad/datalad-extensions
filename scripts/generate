@@ -103,23 +103,36 @@ def process_extension(ext_spec):
 def generate_README(ext_specs):
     with open(op.join(top_path, "README.md"), "w") as f:
         f.write("""\
-# DataLad Extensions
+## DataLad Status
 
-DataLad extensions and their releases/status:
+ [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
+ [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
+ ![DataLad Conda](https://anaconda.org/conda-forge/datalad/badges/version.svg)
+ - CI:
+   [![Travis tests status](https://secure.travis-ci.org/datalad/datalad.png?branch=master)](https://travis-ci.org/datalad/datalad)
+   [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
+   [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
+ - Misc:
+   [![codecov.io](https://codecov.io/github/datalad/datalad/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad?branch=master)
+
+## DataLad Extensions Status
+
 """)
 
         # TODO: link to per-extension cron-github-CI results
         https_extension = "https://github.com/datalad/datalad-extensions"
         for ext, e in ext_specs.items():
-            f.write(f"- [{ext}](https://github.com/datalad/{e.github}):\n"
-                    f'   [![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})\n'
-                    f'   [![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})\n'
-                    f'   [![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)\n'
+            f.write(f"- [{ext}](https://github.com/datalad/{e.github}): "
                     f'   [![GitHub release](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)\n'
                     f'   [![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)\n'
+                    f'   ![Conda](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)\n'
+                    f'  - CIs:\n'
+                    f'    - Released + DataLad master:'
+                    f'    [![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})\n'
+                    f'    - master + Released DataLad: [![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})\n'
+                    f'  - Misc: [![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)\n'
                     f'   [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Average time to resolve an issue")\n'
                     f'   [![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Percentage of issues still open")\n'
-                    f'   ![Conda](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)'
 
                     # [![DOI](
                     # https://zenodo.org/badge/DOI/10.5281/zenodo.3368666.svg
