@@ -48,6 +48,9 @@ jobs:
       run: |
         pip install nose vcrpy mock
 
+    - name: Install APT depends for the extension
+      run: sudo eatmydata apt-get install dcm2niix
+
     - name: WTF!?
       run: |
         datalad wtf
