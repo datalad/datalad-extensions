@@ -21,6 +21,7 @@
 
 extensions:
  datalad_neuroimaging:
+  apt_depends: [dcm2niix]
  datalad_container:
   apt_depends: [singularity-container]
  datalad_metalad:
