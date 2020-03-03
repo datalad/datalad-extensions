@@ -25,7 +25,7 @@ class ExtensionSpec(dict):
     # Some properties which might tune the value
     @property
     def github(self):
-        return self.get("github", self.name)
+        return self.get("github", self.name.replace("_", "-"))
 
     @property
     def githubdash(self):
