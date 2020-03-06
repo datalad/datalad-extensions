@@ -103,6 +103,12 @@ def process_extension(ext_spec):
 def generate_README(ext_specs):
     with open(op.join(top_path, "README.md"), "w") as f:
         f.write("""\
+## Git-annex Status
+
+ - Conda: ![Conda?](https://anaconda.org/conda-forge/git-annex/badges/version.svg)
+    ![Updated](https://anaconda.org/conda-forge/git-annex/badges/latest_release_relative_date.svg)
+    ![Platforms?](https://anaconda.org/conda-forge/git-annex/badges/platforms.svg)
+
 ## DataLad Status
 
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
@@ -121,8 +127,8 @@ def generate_README(ext_specs):
         columns = {
              'Name': 'ref',
              'Release': 'release_github',
-             'PyPI': 'release_pypi',
-             'Conda': 'release_conda',
+             'PyPI Release': 'release_pypi',
+             'Conda Release': 'release_conda',
              'CI: Released + DL master': 'ci_rel+dlmaster',
              'CI: master + DL Release': 'ci_master+dlrelease',
              'Codecov': 'codecov',
