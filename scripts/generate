@@ -107,7 +107,7 @@ def generate_README(ext_specs):
 
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
  [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
- ![DataLad Conda](https://anaconda.org/conda-forge/datalad/badges/version.svg)
+ ![Conda?](https://anaconda.org/conda-forge/datalad/badges/version.svg)
  - CI:
    [![Travis tests status](https://secure.travis-ci.org/datalad/datalad.png?branch=master)](https://travis-ci.org/datalad/datalad)
    [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
@@ -141,9 +141,9 @@ def generate_README(ext_specs):
         for ext, e in ext_specs.items():
             entry = {
                 'ref': f"[{ext}](https://github.com/datalad/{e.github})",
-                'release_github':      f'[![GitHub release](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)',
+                'release_github':      f'[![?](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)',
                 'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
-                'release_conda':       f'![Conda](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
+                'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
                 'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})',
                 'ci_master+dlrelease': f'[![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)',
