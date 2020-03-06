@@ -1,3 +1,9 @@
+## Git-annex Status
+
+ - Conda: ![Conda?](https://anaconda.org/conda-forge/git-annex/badges/version.svg)
+    ![Updated](https://anaconda.org/conda-forge/git-annex/badges/latest_release_relative_date.svg)
+    ![Platforms?](https://anaconda.org/conda-forge/git-annex/badges/platforms.svg)
+
 ## DataLad Status
 
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
@@ -12,7 +18,7 @@
 
 ## DataLad Extensions Status
 
- | Name | Release | PyPI | Conda | CI: Released + DL master | CI: master + DL Release | Codecov | Issue Resolution | Open Issues | 
+ | Name | Release | PyPI Release | Conda Release | CI: Released + DL master | CI: master + DL Release | Codecov | Issue Resolution | Open Issues | 
  | --- | --- | --- | --- | --- | --- | --- | --- | --- | 
  | [datalad_neuroimaging](https://github.com/datalad/datalad-neuroimaging) | [![?](https://img.shields.io/github/release/datalad/datalad-neuroimaging.svg)](https://GitHub.com/datalad/datalad-neuroimaging/releases/) | [![PyPI version fury.io](https://badge.fury.io/py/datalad_neuroimaging.svg)](https://pypi.python.org/pypi/datalad_neuroimaging/) | ![-](https://anaconda.org/conda-forge/datalad-neuroimaging/badges/version.svg) | [![Released+DataLad master](https://github.com/datalad/datalad-extensions/workflows/test-datalad_neuroimaging/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3Atest-datalad_neuroimaging) | [![master+Released Datalad](https://secure.travis-ci.org/datalad/datalad-neuroimaging.png?branch=master)](https://travis-ci.org/datalad/datalad-neuroimaging) | [![codecov.io](https://codecov.io/github/datalad/datalad-neuroimaging/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad-neuroimaging?branch=master) | [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/datalad-neuroimaging.svg)](http://isitmaintained.com/project/datalad/datalad-neuroimaging "Average time to resolve an issue") | [![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/datalad-neuroimaging.svg)](http://isitmaintained.com/project/datalad/datalad-neuroimaging "Percentage of issues still open") | 
  | [datalad_container](https://github.com/datalad/datalad-container) | [![?](https://img.shields.io/github/release/datalad/datalad-container.svg)](https://GitHub.com/datalad/datalad-container/releases/) | [![PyPI version fury.io](https://badge.fury.io/py/datalad_container.svg)](https://pypi.python.org/pypi/datalad_container/) | ![-](https://anaconda.org/conda-forge/datalad-container/badges/version.svg) | [![Released+DataLad master](https://github.com/datalad/datalad-extensions/workflows/test-datalad_container/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3Atest-datalad_container) | [![master+Released Datalad](https://secure.travis-ci.org/datalad/datalad-container.png?branch=master)](https://travis-ci.org/datalad/datalad-container) | [![codecov.io](https://codecov.io/github/datalad/datalad-container/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad-container?branch=master) | [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/datalad-container.svg)](http://isitmaintained.com/project/datalad/datalad-container "Average time to resolve an issue") | [![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/datalad-container.svg)](http://isitmaintained.com/project/datalad/datalad-container "Percentage of issues still open") | 
