@@ -118,22 +118,39 @@ def generate_README(ext_specs):
 ## DataLad Extensions Status
 
 """)
+        columns = {
+             'Name': 'ref',
+             'Release': 'release_github',
+             'PyPI': 'release_pypi',
+             'Conda': 'release_conda',
+             'CI: Released + DL master': 'ci_rel+dlmaster',
+             'CI: master + DL Release': 'ci_master+dlrelease',
+             'Codecov': 'codecov',
+             'Issue Resolution': 'issues_restime',
+             'Open Issues': 'issues_open'
+        }
 
+        def write_row(entries):
+            f.write(' | '.join([''] + entries + ['']) + '\n')
+
+        # Header
+        write_row(list(columns))
+        write_row(['---']*len(columns))
         # TODO: link to per-extension cron-github-CI results
         https_extension = "https://github.com/datalad/datalad-extensions"
         for ext, e in ext_specs.items():
-            f.write(f"- [{ext}](https://github.com/datalad/{e.github}): "
-                    f'   [![GitHub release](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)\n'
-                    f'   [![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)\n'
-                    f'   ![Conda](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)\n'
-                    f'  - CIs:\n'
-                    f'    - Released + DataLad master:'
-                    f'    [![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})\n'
-                    f'    - master + Released DataLad: [![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})\n'
-                    f'  - Misc: [![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)\n'
-                    f'   [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Average time to resolve an issue")\n'
-                    f'   [![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Percentage of issues still open")\n'
-
+            entry = {
+                'ref': f"[{ext}](https://github.com/datalad/{e.github})",
+                'release_github':      f'[![GitHub release](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)',
+                'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
+                'release_conda':       f'![Conda](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
+                'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})',
+                'ci_master+dlrelease': f'[![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})',
+                'codecov':             f'[![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)',
+                'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Average time to resolve an issue")',
+                'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Percentage of issues still open")',
+            }
+            write_row([entry[k] for k in columns.values()])
                     # [![DOI](
                     # https://zenodo.org/badge/DOI/10.5281/zenodo.3368666.svg
                     # )](https://doi.org/10.5281/zenodo.3368666)
@@ -142,8 +159,6 @@ def generate_README(ext_specs):
                     # f"[![License: MIT](
                     # https://img.shields.io/badge/License-MIT-yellow.svg)](
                     # https://opensource.org/licenses/MIT) 
-                    '\n'
-                    )
 
 
 def main(extensions):
