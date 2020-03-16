@@ -24,8 +24,9 @@ extensions:
   apt_depends: [dcm2niix]
  datalad_container:
   apt_depends: [singularity-container]
- datalad_metalad:
-  pypi: datalad-metalad
+ # mih is not interested, yoh has no authority to cook up a release
+ #datalad_metalad:
+ # pypi: datalad-metalad
  datalad_crawler:
  # datalad_webapp,     # not developed ATM, not sure if of interest to keep track
  # datalad_ukbiobank,  # yet to be renamed (issue filed), has no tests, so would fail
