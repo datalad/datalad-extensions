@@ -19,8 +19,15 @@ jobs:
         sudo apt-get install eatmydata
         sudo eatmydata apt-get install singularity-container gnupg
 
-    - name: Import the key for signing
-      run: echo '${{ secrets.datalad_builder_gpgkey }}' | gpg --import
+    - name: Checkout this repository
+      uses: actions/checkout@v1
+
+    - name: Import GPG keys
+      run: |
+        # private key for signing - comes from secrets
+        echo '${{ secrets.datalad_builder_gpgkey }}' | gpg --import
+        # public key for verification
+        cat resources/datalad-builder-key.asc | gpg --import
 
     - name: Get the git-annex build environment container
       run: singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
