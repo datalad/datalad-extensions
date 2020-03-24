@@ -1,0 +1,53 @@
+name: Build git-annex snapshot
+
+# TODO: include regular rule
+on: [pull_request]
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up system
+      shell: bash
+      run: |
+        bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
+        sudo apt-get update -qq
+        sudo apt-get install eatmydata
+        sudo eatmydata apt-get install singularity-container gnupg
+
+    - name: Import the key for signing
+      run: echo '${{ secrets.datalad_builder_gpgkey }}' | gpg --import
+
+    - name: Get the git-annex build environment container
+      run: singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
+
+    - name: Clone
+      run: |
+        mkdir build
+        git clone git://git.kitenet.net/git-annex build/git-annex
+
+    # Note: building binary package involves running tests as well
+    - name: Build packages
+      run: |
+        LANG=C DEB_SIGN_KEYID=13A1093296154584245E0300C98FC49D36DAB17F  \
+         singularity exec ./buildenv.sif \
+         make -C build/git-annex debianstandalone-dsc debianstandalone
+
+    - name: Upload packages
+      uses: actions/upload-artifact@v2-preview
+      with:
+          name: git-annex-debianstandalone-packages
+          # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
+          path: build/*.*
+
+  install-package:
+    runs-on: ubuntu-latest
+    needs: build-package
+    steps:
+      - name: Download git-annex package and install it
+        uses: actions/download-artifact@v2-preview
+        with:
+          name: git-annex-debianstandalone-packages
+      - run: |
+          ls -l
+          sudo dpkg -i *.deb
