@@ -58,14 +58,55 @@ jobs:
           # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
           path: build/*.*
 
-  install-package:
+  test-datalad:
     runs-on: ubuntu-latest
     needs: build-package
+    strategy:
+      matrix:
+        version: [master, maint, release]
+      fail-fast: false
+
     steps:
-      - name: Download git-annex package and install it
+      - name: Download git-annex package
         uses: actions/download-artifact@v2-preview
         with:
           name: git-annex-debianstandalone-packages
-      - run: |
+
+      - name: Install git-annex package
+        run: |
           ls -l
           sudo dpkg -i *.deb
+
+      - name: Set up environment
+        run: |
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: install ${{ matrix.version }} datalad
+        run: |
+          if [ "${{ matrix.version }}" = "release" ]; then
+            commitish=$(curl -s https://api.github.com/repos/datalad/datalad/releases/latest | awk '/"tag_name"/{print $2}' | sed -e 's,[",],,g');
+          else
+            commitish="${{ matrix.version }}";
+          fi
+          python -m pip install --upgrade pip
+          pip install https://github.com/datalad/datalad/archive/${commitish}.zip
+
+      - name: Install nose et al (just in case!)
+        run: |
+          pip install nose vcrpy mock
+
+      - name: WTF!?
+        run: |
+          datalad wtf
+
+      - name: Run datalad tests
+        run: |
+          mkdir -p __testhome__
+          cd __testhome__
+          python -m nose -s -v datalad
