@@ -17,7 +17,7 @@ jobs:
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
         sudo apt-get install eatmydata
-        sudo eatmydata apt-get install singularity-container gnupg
+        sudo eatmydata apt-get install singularity-container gnupg moreutils
 
     - name: Checkout this repository
       uses: actions/checkout@v1
