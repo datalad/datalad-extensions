@@ -29,24 +29,9 @@ jobs:
         # public key for verification
         cat resources/datalad-builder-key.asc | gpg --import
 
-    - name: Get the git-annex build environment container
-      run: singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
-
-    - name: Clone
+    - name: Building it all
       run: |
-        mkdir build
-        git clone git://git.kitenet.net/git-annex build/git-annex
-
-    # Note: building binary package involves running tests as well
-    - name: Build source packages
-      run: |
-         singularity exec ./buildenv.sif \
-          make -C build/git-annex debianstandalone-dsc
-
-    - name: Build binary package from the source package
-      run: |
-        singularity exec ./buildenv.sif \
-         bash -c 'cd build && dpkg-source -x *.dsc && cd git-annex-* && dpkg-buildpackage -b'
+        scripts/ci/build_git_annex build
 
     - name: Cleanup before bundling upload
       run: find build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
