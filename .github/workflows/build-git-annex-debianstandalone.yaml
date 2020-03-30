@@ -10,6 +10,10 @@ env:
 jobs:
   build-package:
     runs-on: ubuntu-latest
+    strategy:
+      # Do not fail fast so we could upload full build log and possible source
+      # pkgs even if binary package building fails
+      fail-fast: false
     steps:
     - name: Set up system
       shell: bash
