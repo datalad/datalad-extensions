@@ -42,8 +42,9 @@ if [ -e git-annex ]; then
   git pull --ff-only;
   )
 else
-  echo "I: Cloning"
-  git clone git://git.kitenet.net/git-annex
+  origin="${GIT_ANNEX_REPO:-git://git.kitenet.net/git-annex}"
+  echo "I: Cloning $origin"
+  git clone "$origin" git-annex
 fi
 
 if [ -e "buildenv.sif" ]; then
@@ -61,7 +62,7 @@ chronic singularity exec ./buildenv.sif make -C git-annex debianstandalone-dsc
 
 echo "I: Build binary package from the source package."
 if ! singularity exec ./buildenv.sif \
-     bash -c 'dpkg-source -x *.dsc git-annex-source && cd git-annex-source && dpkg-buildpackage -b' >| "${bbuild_log}" 2>&1; then
+     bash -c 'set -x; export LANG=C; dpkg-source -x *.dsc git-annex-source && cd git-annex-source && dpkg-buildpackage -b' >| "${bbuild_log}" 2>&1; then
        echo "E: build failed"
        echo "I: the tail of the log"
        tail -n 10 "${bbuild_log}"
