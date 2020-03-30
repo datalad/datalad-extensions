@@ -70,4 +70,8 @@ if ! singularity exec ./buildenv.sif \
        grep '^FAIL$' "${bbuild_log}"
        exit 1
 fi
+
+echo "I: Checking that all tests were ran and passed:"
+grep -E '^All [[:digit:]]{3} tests passed' "${bbuild_log}"
+
 echo "I: Build finished. Log of binary build is $bbuild_log"
