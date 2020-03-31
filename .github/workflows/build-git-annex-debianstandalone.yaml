@@ -45,7 +45,7 @@ jobs:
       with:
           name: git-annex-debianstandalone-packages
           # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
-          path: /tmp/annex-build/*.*
+          path: /tmp/annex-build/git-annex[-_]*.*
 
   test-datalad:
     runs-on: ubuntu-latest
