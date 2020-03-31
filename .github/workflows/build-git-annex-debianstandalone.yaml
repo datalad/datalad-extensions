@@ -63,7 +63,8 @@ jobs:
 
       - name: Install git-annex package
         run: |
-          ls -l
+          sudo ls -l
+          sudo file *.deb
           sudo dpkg -i *.deb
 
       - name: Set up environment
