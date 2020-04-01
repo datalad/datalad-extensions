@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# A helper to clone and build git-annex in a singularity environment.
+# Just provide it with a sub-directory where build should happen.
+#
+# Note that packages will be signed, so it will either prompt you for GPG
+# key or you could start gpg-agent and/or instruct which GPG key to use
+# via DEB_SIGN_KEYID env var.
+
+set -eu
+
+hash git          # needs git
+hash singularity  # needs singularity
+hash chronic      # needs chronic from moreutils
+
+# Temporary to check if all is good when just builds fine without testing
+# export DEB_BUILD_OPTIONS="nocheck"
+
+bbuild_log=git-annex-build.log
+
+
+help () {
+  echo "$0 build-path"
+}
+
+if [ "$#" -lt 1 ]; then
+  build_path=$(mktemp -d --tmpdir annex-XXXXXXX)
+else
+  build_path="$1"
+fi
+
+echo "I: Will work under $build_path"
+mkdir -p "$build_path"
+cd "$build_path"
+
+if [ -e git-annex ]; then
+  echo "I: Updating existing repository"
+  (
+  cd git-annex;
+  git clean -dfx;
+  git reset --hard;
+  git pull --ff-only;
+  )
+else
+  origin="${GIT_ANNEX_REPO:-git://git.kitenet.net/git-annex}"
+  echo "I: Cloning $origin"
+  git clone "$origin" git-annex
+fi
+
+if [ -e "buildenv.sif" ]; then
+  echo "I: Reusing present singularity image"
+else
+  echo "I: Getting the git-annex build environment container"
+  chronic singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
+fi
+
+echo "I: Cleaning up"
+rm -rf git-annex[-_]*
+
+echo "I: Build source packages"
+chronic singularity exec ./buildenv.sif make -C git-annex debianstandalone-dsc
+
+echo "I: Build binary package from the source package."
+if ! singularity exec ./buildenv.sif \
+     bash -c 'set -x; export LANG=C; dpkg-source -x *.dsc git-annex-source && cd git-annex-source && dpkg-buildpackage -b' >| "${bbuild_log}" 2>&1; then
+       echo "E: build failed"
+       echo "I: the tail of the log"
+       tail -n 10 "${bbuild_log}"
+       echo "I: FAIL line matches with some context"
+       grep -B10 '^FAIL$' "${bbuild_log}"
+       exit 1
+fi
+
+echo "I: Checking that all tests were ran and passed:"
+grep -E '^All [[:digit:]]{3} tests passed' "${bbuild_log}"
+
+echo "I: Build finished. Log of binary build is $bbuild_log"
