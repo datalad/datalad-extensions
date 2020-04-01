@@ -108,6 +108,8 @@ def generate_README(ext_specs):
  - Conda: ![Conda?](https://anaconda.org/conda-forge/git-annex/badges/version.svg)
     ![Updated](https://anaconda.org/conda-forge/git-annex/badges/latest_release_relative_date.svg)
     ![Platforms?](https://anaconda.org/conda-forge/git-annex/badges/platforms.svg)
+ - Current snapshot build/tests + DataLad tests:
+    [![Build git-annex snapshot](https://github.com/datalad/datalad-extensions/workflows/Build%20git-annex%20snapshot/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3A%22Build+git-annex+snapshot%22)
 
 ## DataLad Status
 
