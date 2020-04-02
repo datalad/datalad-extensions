@@ -19,7 +19,7 @@ In particular `generate` produces
 
 This file provides `generate` script a specification for which extensions to
 produce the GitHub workflows from the
-[templates/.github/workfls/test-{{extension.name}}.yaml](templates/.github/workfls/test-{{extension.name}}.yaml) template.
+[templates/.github/workflows/test-{{extension.name}}.yaml](templates/.github/workflows/test-{{extension.name}}.yaml) template.
 This file expects a dictionary with the key `extensions` which should be a list
 of extension package names with following optional fields:
 
