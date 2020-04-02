@@ -35,4 +35,5 @@ extensions:
   apt_depends: [dcm2niix]
   pypi: datalad-hirni
   package: datalad_hirni
+  github: psychoinformatics-de/datalad-hirni
  # datalad_ukbiobank,  # yet to be renamed (issue filed), has no tests, so would fail
