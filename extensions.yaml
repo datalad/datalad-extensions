@@ -32,7 +32,7 @@ extensions:
   pypi: datalad-webapp
   package: datalad_webapp
  datalad_hirni:
-  apt_depends: [dcm2niix]
+  apt_depends: [dcm2niix, singularity-container]
   pypi: datalad-hirni
   package: datalad_hirni
   github: psychoinformatics-de/datalad-hirni
