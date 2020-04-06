@@ -31,6 +31,7 @@ extensions:
  datalad_webapp:
   pypi: datalad-webapp
   package: datalad_webapp
+  tester: pytest
  datalad_hirni:
   apt_depends: [dcm2niix, singularity-container]
   pypi: datalad-hirni

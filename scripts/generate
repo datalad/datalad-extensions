@@ -54,6 +54,10 @@ class ExtensionSpec(dict):
     def apt_depends(self):
         return self.get("apt_depends", [])
 
+    @property
+    def tester(self):
+        return self.get('tester', 'nose')
+
     #def __getattribute__(self, item):
     #    return self[item]
 
