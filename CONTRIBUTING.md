@@ -26,8 +26,11 @@ of extension package names with following optional fields:
 - `apt_depends` - additional Debian packages to be installed using `apt`
 - `pypi` - name of the pypi package, if it is different from the name
 - `conda` - name of the conda package, if it is different from the name
-- `github` - name of the repository under `datalad/` organization on Github,
-  if it is different from the name
+- `github` - name of the repository if it is different from the name. If this
+  contains a `/` it is expected to contain the organization otherwise it's 
+  assumed to be under `datalad/` organization on Github.
+- `tester` - what test framework to use. Currently either 'nose' or 'pytest'; 
+  defaults to 'nose'. Used to generate `.travis.yml`
 
 ## HOWTO re-generate files
 

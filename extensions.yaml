@@ -28,5 +28,13 @@ extensions:
  #datalad_metalad:
  # pypi: datalad-metalad
  datalad_crawler:
- # datalad_webapp,     # not developed ATM, not sure if of interest to keep track
+ datalad_webapp:
+  pypi: datalad-webapp
+  package: datalad_webapp
+  tester: pytest
+ datalad_hirni:
+  apt_depends: [dcm2niix, singularity-container]
+  pypi: datalad-hirni
+  package: datalad_hirni
+  github: psychoinformatics-de/datalad-hirni
  # datalad_ukbiobank,  # yet to be renamed (issue filed), has no tests, so would fail

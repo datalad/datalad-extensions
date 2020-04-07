@@ -48,6 +48,8 @@ jobs:
       run: |
         pip install datalad_neuroimaging[devel]
     - name: Install nose et al (just in case!)
+      # Note, that we need nose even in case of pytest, due to test helpers
+      # depending on it.
       run: |
         pip install nose vcrpy mock
 
@@ -61,4 +63,5 @@ jobs:
       run: |
         mkdir -p __testhome__
         cd __testhome__
+
         python -m nose -s -v --with-cov --cover-package datalad datalad_neuroimaging

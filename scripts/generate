@@ -25,11 +25,18 @@ class ExtensionSpec(dict):
     # Some properties which might tune the value
     @property
     def github(self):
-        return self.get("github", self.name.replace("_", "-"))
+        from_spec = self.get("github", self.name.replace("_", "-"))
+        gh_url = "datalad/{}".format(from_spec) \
+            if '/' not in from_spec else from_spec
+        return gh_url
 
     @property
     def githubdash(self):
         return self.github.replace("_", "-")
+
+    @property
+    def githubname(self):
+        return self.github.split('/')[1]
 
     @property
     def pypi(self):
@@ -46,6 +53,10 @@ class ExtensionSpec(dict):
     @property
     def apt_depends(self):
         return self.get("apt_depends", [])
+
+    @property
+    def tester(self):
+        return self.get('tester', 'nose')
 
     #def __getattribute__(self, item):
     #    return self[item]
@@ -156,22 +167,22 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
         https_extension = "https://github.com/datalad/datalad-extensions"
         for ext, e in ext_specs.items():
             entry = {
-                'ref': f"[{ext}](https://github.com/datalad/{e.github})",
-                'release_github':      f'[![?](https://img.shields.io/github/release/datalad/{e.githubdash}.svg)](https://GitHub.com/datalad/{e.githubdash}/releases/)',
+                'ref': f"[{ext}](https://github.com/{e.github})",
+                'release_github':      f'[![?](https://img.shields.io/github/release/{e.githubdash}.svg)](https://GitHub.com/{e.githubdash}/releases/)',
                 'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
                 'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})',
-                'ci_master+dlrelease': f'[![master+Released Datalad](https://secure.travis-ci.org/datalad/{e.githubdash}.png?branch=master)](https://travis-ci.org/datalad/{e.githubdash})',
-                'codecov':             f'[![codecov.io](https://codecov.io/github/datalad/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/datalad/{e.githubdash}?branch=master)',
-                'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Average time to resolve an issue")',
-                'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/datalad/{e.githubdash}.svg)](http://isitmaintained.com/project/datalad/{e.githubdash} "Percentage of issues still open")',
+                'ci_master+dlrelease': f'[![master+Released Datalad](https://secure.travis-ci.org/{e.githubdash}.png?branch=master)](https://travis-ci.org/{e.githubdash})',
+                'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
+                'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
+                'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Percentage of issues still open")',
             }
             write_row([entry[k] for k in columns.values()])
                     # [![DOI](
                     # https://zenodo.org/badge/DOI/10.5281/zenodo.3368666.svg
                     # )](https://doi.org/10.5281/zenodo.3368666)
                     # f"[![Documentation](https://readthedocs.org/projects/{
-                    # e.github}/badge/?version=latest)](http://{e.github}.rtfd.org)"
+                    # e.githubname}/badge/?version=latest)](http://{e.githubname}.rtfd.org)"
                     # f"[![License: MIT](
                     # https://img.shields.io/badge/License-MIT-yellow.svg)](
                     # https://opensource.org/licenses/MIT) 
