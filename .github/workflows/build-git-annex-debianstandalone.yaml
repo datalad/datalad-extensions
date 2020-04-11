@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/build-git-annex-debianstandalone.yaml'
   schedule:
     - cron: '30 01 * * *'
 
