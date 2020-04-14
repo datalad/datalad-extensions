@@ -71,10 +71,7 @@ jobs:
 
       - name: Install git-annex package
         run: |
-          sudo ls -l
-          sudo file git-annex*
-          zcat git-annex*deb > extracted.deb
-          sudo dpkg -i git-annex*.deb || sudo dpkg -i extracted.deb
+          sudo dpkg -i git-annex*.deb
 
       - name: Set up environment
         run: |
