@@ -4,14 +4,13 @@
 name: test-{{ extension.name }}
 
 on:
-  # Trigger the workflow on push or pull request,
+  # Trigger the workflow on pull request,
   # but only for the master branch
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/test-{{ extension.name }}.yaml'
   schedule:
     - cron: '30 01 * * *'
 

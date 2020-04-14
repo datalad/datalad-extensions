@@ -1,14 +1,13 @@
 name: Build git-annex snapshot
 
 on:
-  # Trigger the workflow on push or pull request,
+  # Trigger the workflow on pull request,
   # but only for the master branch
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/build-git-annex-debianstandalone.yaml'
   schedule:
     - cron: '30 01 * * *'
 
@@ -72,10 +71,7 @@ jobs:
 
       - name: Install git-annex package
         run: |
-          sudo ls -l
-          sudo file git-annex*
-          zcat git-annex*deb > extracted.deb
-          sudo dpkg -i git-annex*.deb || sudo dpkg -i extracted.deb
+          sudo dpkg -i git-annex*.deb
 
       - name: Set up environment
         run: |
