@@ -9,6 +9,8 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/test-datalad_hirni.yaml'
   schedule:
     - cron: '30 01 * * *'
 

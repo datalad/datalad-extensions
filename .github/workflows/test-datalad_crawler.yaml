@@ -9,6 +9,8 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/workflows/test-datalad_crawler.yaml'
   schedule:
     - cron: '30 01 * * *'
 
