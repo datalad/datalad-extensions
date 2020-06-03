@@ -55,6 +55,13 @@ jobs:
     - name: Install APT depends for the extension
       run: sudo eatmydata apt-get install dcm2niix singularity-container
 
+   - name: Install hirni-toolbox
+     # We don't want to clone the toolbox (and get its container images) over
+     # and over again in the tests
+      run: |
+        datalad clone https://github.com/psychoinformatics-de/hirni-toolbox.git /tmp/__toolbox__
+        datalad get -d /tmp/__toolbox__
+
     - name: WTF!?
       run: |
         datalad wtf
@@ -64,3 +71,5 @@ jobs:
         cd __testhome__
 
         python -m nose -s -v --with-cov --cover-package datalad datalad_hirni
+      env:
+        DATALAD_HIRNI_TOOLBOX_URL: /tmp/__toolbox__
