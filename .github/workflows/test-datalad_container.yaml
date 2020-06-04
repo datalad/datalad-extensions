@@ -5,12 +5,11 @@ name: test-datalad_container
 
 on:
   # Trigger the workflow on pull request,
-  # but only for the master branch
+  # but only if any given extension workflow was modified
   pull_request:
-    branches:
-      - master
     paths:
       - '.github/workflows/test-datalad_container.yaml'
+  # all should be triggered on cron
   schedule:
     - cron: '30 01 * * *'
 
