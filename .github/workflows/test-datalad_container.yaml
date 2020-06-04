@@ -25,6 +25,7 @@ jobs:
     - name: Set up system
       shell: bash
       run: |
+        echo "JUST TESTING if would run this workflow only now"
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
         sudo apt-get install eatmydata
