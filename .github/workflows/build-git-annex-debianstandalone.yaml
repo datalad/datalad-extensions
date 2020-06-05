@@ -70,18 +70,14 @@ jobs:
         run: |
           sudo dpkg -i git-annex*.deb
 
+      - name: Checkout this repository for scripts/ci
+        uses: actions/checkout@v1
+
       - name: Set up system
         shell: bash
         run: |
           if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
-            sudo apt-get update -qq
-            sudo apt-get install dosfstools
-            # 500 MB VFAT FS in a box
-            sudo dd if=/dev/zero of=/crippledfs.img count=500 bs=1M
-            sudo mkfs.vfat /crippledfs.img
-            # mount
-            sudo mkdir /crippledfs
-            sudo mount -o "uid=$(id -u),gid=$(id -g)" /crippledfs.img /crippledfs
+            scripts/ci/setup_crippledfs /crippledfs 500
           fi
 
       - name: Run tests
