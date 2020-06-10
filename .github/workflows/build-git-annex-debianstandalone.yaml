@@ -101,6 +101,9 @@ jobs:
           git config --global user.email "test@github.land"
           git config --global user.name "GitHub Almighty"
 
+          cd $HOME
+          export | grep -e crippledfs || :
+
           git annex test
 
   test-datalad:
