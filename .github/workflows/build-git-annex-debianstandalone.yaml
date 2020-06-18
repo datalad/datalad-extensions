@@ -2,10 +2,7 @@ name: Build git-annex snapshot
 
 on:
   # Trigger the workflow on pull request,
-  # but only for the master branch
   pull_request:
-    branches:
-      - master
     paths:
       - '.github/workflows/build-git-annex-debianstandalone.yaml'
   schedule:
@@ -54,6 +51,60 @@ jobs:
           name: git-annex-debianstandalone-packages
           # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
           path: /tmp/annex-build/git-annex[-_]*.*
+
+  test-annex:
+    runs-on: ubuntu-latest
+    needs: build-package
+    strategy:
+      matrix:
+        flavor: [normal, crippled-tmp, crippled-home]
+      fail-fast: false
+
+    steps:
+      - name: Download git-annex package
+        uses: actions/download-artifact@v2-preview
+        with:
+          name: git-annex-debianstandalone-packages
+
+      - name: Install git-annex package
+        run: |
+          sudo dpkg -i git-annex*.deb
+
+      - name: Checkout this repository for scripts/ci
+        uses: actions/checkout@v1
+
+      - name: Set up system
+        shell: bash
+        run: |
+          if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
+            scripts/ci/setup_crippledfs /crippledfs 500
+          fi
+
+      - name: Run tests
+        run: |
+          case "${{ matrix.flavor }}" in
+            crippled-tmp)
+              # forces all test repos/paths into the VFAT FS
+              export TMPDIR=/crippledfs
+              ;;
+            crippled-home)
+              export HOME=/crippledfs
+              ;;
+            normal)
+              ;;
+            *)
+              echo "Unknown flavor ${{ matrix.flavor }}"
+              exit 1
+          esac
+
+          # Do it after we possibly setup HOME
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+          cd $HOME
+          export | grep -e crippledfs || :
+
+          git annex test
 
   test-datalad:
     runs-on: ubuntu-latest
