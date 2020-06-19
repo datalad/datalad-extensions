@@ -38,3 +38,4 @@ extensions:
   package: datalad_hirni
   github: psychoinformatics-de/datalad-hirni
  datalad_ukbiobank:
+ datalad_osf:
