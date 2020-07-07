@@ -19,16 +19,27 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      matrix:
+        # name mimics the one in .travis.yml for datalad build introduced in
+        # https://github.com/datalad/datalad/pull/4640
+        annex-install-scenario: [neurodebian]
       fail-fast: false
 
     steps:
     - name: Set up system
       shell: bash
       run: |
-        bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
-        sudo apt-get update -qq
-        sudo apt-get install eatmydata
-        sudo eatmydata apt-get install git-annex-standalone
+        case "${{ matrix.annex-install-scenario }}" in
+          neurodebian)
+            bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
+            sudo apt-get update -qq
+            sudo apt-get install eatmydata
+            sudo eatmydata apt-get install git-annex-standalone
+            ;;
+        *)
+          echo "Unknown scenario ${{ matrix.annex-install-scenario }}" >&2
+          exit 1
+        esac
     - name: Set up environment
       run: |
         git config --global user.email "test@github.land"
