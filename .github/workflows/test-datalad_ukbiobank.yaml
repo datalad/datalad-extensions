@@ -5,12 +5,11 @@ name: test-datalad_ukbiobank
 
 on:
   # Trigger the workflow on pull request,
-  # but only for the master branch
+  # but only if any given extension workflow was modified
   pull_request:
-    branches:
-      - master
     paths:
       - '.github/workflows/test-datalad_ukbiobank.yaml'
+  # all should be triggered on cron
   schedule:
     - cron: '30 01 * * *'
 
@@ -20,21 +19,37 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      matrix:
+        # name mimics the one in .travis.yml for datalad build introduced in
+        # https://github.com/datalad/datalad/pull/4640
+        annex-install-scenario: [neurodebian, datalad-extensions-latest]
       fail-fast: false
 
     steps:
+    - uses: actions/checkout@v1
     - name: Set up system
       shell: bash
       run: |
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
         sudo apt-get install eatmydata
-        sudo eatmydata apt-get install git-annex-standalone
+        case "${{ matrix.annex-install-scenario }}" in
+          neurodebian)
+            sudo eatmydata apt-get install git-annex-standalone
+            ;;
+          datalad-extensions-latest)
+            sudo eatmydata apt-get install jq
+            GITHUB_TOKEN=${{ secrets.datalad_github_token }} ./scripts/ci/download-latest-artifact
+            sudo eatmydata dpkg -i download/*.deb
+            ;;
+          *)
+            echo "Unknown scenario ${{ matrix.annex-install-scenario }}" >&2
+            exit 1
+        esac
     - name: Set up environment
       run: |
         git config --global user.email "test@github.land"
         git config --global user.name "GitHub Almighty"
-    - uses: actions/checkout@v1
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
