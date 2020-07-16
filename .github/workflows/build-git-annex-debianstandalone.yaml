@@ -40,7 +40,7 @@ jobs:
 
     - name: Building it all
       run: |
-        scripts/ci/build_git_annex /tmp/annex-build
+        DEB_BUILD_OPTIONS=nocheck scripts/ci/build_git_annex /tmp/annex-build
 
     - name: Cleanup before bundling upload
       run: find /tmp/annex-build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
