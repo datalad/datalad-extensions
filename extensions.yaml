@@ -37,5 +37,6 @@ extensions:
   package: datalad_hirni
   github: psychoinformatics-de/datalad-hirni
  datalad_osf:
+  pip_depends: [pytest]
   pypi: datalad-osf
  datalad_ukbiobank:
