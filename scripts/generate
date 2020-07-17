@@ -51,6 +51,10 @@ class ExtensionSpec(dict):
         return self.get('conda', self.package.replace('_', '-'))
 
     @property
+    def pip_depends(self):
+        return self.get("pip_depends", [])
+
+    @property
     def apt_depends(self):
         return self.get("apt_depends", [])
 

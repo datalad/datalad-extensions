@@ -61,6 +61,10 @@ jobs:
     - name: Install {{ extension.name }} extension from PyPI ([devel])
       run: |
         pip install {{ extension.pypi }}[devel]
+{%- if extension.pip_depends %}
+    - name: Install PIP depends for the extension
+      run: pip install {{ extension.pip_depends | join(' ')}}
+{% endif %}
     - name: Install nose et al (just in case!)
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.
