@@ -66,7 +66,7 @@ jobs:
       # depending on it.
       run: |
         pip install nose vcrpy mock
-{% if extension.apt_depends %}
+{%- if extension.apt_depends %}
     - name: Install APT depends for the extension
       run: sudo eatmydata apt-get install {{ extension.apt_depends | join(' ')}}
 {% endif %}
