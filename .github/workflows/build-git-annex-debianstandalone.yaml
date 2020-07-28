@@ -129,7 +129,10 @@ jobs:
         # TODO: Drop the release condition once 0.13.1 is released.
         run: |
           if [ "${{ matrix.version }}" != "release" ]; then
-            bash tools/ci/prep-travis-forssh.sh;
+            curl -fSsL \
+              https://raw.githubusercontent.com/datalad/datalad/master/tools/ci/prep-travis-forssh.sh \
+              >setup-ssh.sh;
+            bash setup-ssh.sh;
             export DATALAD_TESTS_SSH=1;
           fi
 
