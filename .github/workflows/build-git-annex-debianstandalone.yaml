@@ -124,6 +124,15 @@ jobs:
         run: |
           sudo dpkg -i git-annex*.deb
 
+      - name: Set up SSH target
+        shell: bash
+        # TODO: Drop the release condition once 0.13.1 is released.
+        run: |
+          if [ "${{ matrix.version }}" != "release" ]; then
+            bash tools/ci/prep-travis-forssh.sh;
+            export DATALAD_TESTS_SSH=1;
+          fi
+
       - name: Set up environment
         run: |
           git config --global user.email "test@github.land"
