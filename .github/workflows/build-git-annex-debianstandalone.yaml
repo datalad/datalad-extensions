@@ -126,7 +126,7 @@ jobs:
         run: |
           mkdir /tmp/testrepo; cd /tmp/testrepo; git init
           function nfailed() {
-            strace -f git-annex "$1" 2>&1 | awk "/$2.*ENOENT/{print}" | wc -l
+            strace -f git-annex "$1" 2>&1 | awk "/$2.*ENOENT/{print}" | tee /dev/fd/2 | wc -l
           }
           # We should get some reasonable number (not 40) of directories look up for dynamic libraries
           liblookups=
