@@ -57,7 +57,9 @@ jobs:
     needs: build-package
     strategy:
       matrix:
-        flavor: [normal, crippled-tmp, crippled-home, nfs-tmp, nfs-home]
+        # TODO: add , nfs-home
+        # https://git-annex.branchable.com/bugs/running_tests_on_NFS_HOME_does_not_exit_cleanly__58___gpgtmp/
+        flavor: [normal, crippled-tmp, crippled-home, nfs-tmp]
       fail-fast: false
 
     steps:
