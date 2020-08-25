@@ -57,7 +57,7 @@ jobs:
     needs: build-package
     strategy:
       matrix:
-        flavor: [normal, crippled-tmp, crippled-home]
+        flavor: [normal, crippled-tmp, crippled-home, nfs-tmp, nfs-home]
       fail-fast: false
 
     steps:
@@ -79,6 +79,13 @@ jobs:
           if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
             scripts/ci/setup_crippledfs /crippledfs 500
           fi
+          if echo "${{ matrix.flavor }}" | grep -q "nfs" ; then
+            mkdir /tmp/nfsmount_ /tmp/nfsmount
+            echo "/tmp/nfsmount_ localhost(rw)" | sudo bash -c 'cat - > /etc/exports'
+            sudo apt-get install -y nfs-kernel-server
+            sudo exportfs -a
+            sudo mount -t nfs localhost:/tmp/nfsmount_ /tmp/nfsmount
+          fi
 
       - name: Run tests
         run: |
@@ -89,6 +96,12 @@ jobs:
               ;;
             crippled-home)
               export HOME=/crippledfs
+              ;;
+            nfs-tmp)
+              export TMPDIR=/tmp/nfsmount
+              ;;
+            nfs-home)
+              export HOME=/tmp/nfsmount
               ;;
             normal)
               ;;
