@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
-            scripts/ci/setup_crippledfs crippledfs 500
+            scripts/ci/setup_crippledfs_macos crippledfs 500
           fi
 
       - name: Run tests

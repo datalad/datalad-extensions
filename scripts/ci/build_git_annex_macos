@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-git clone --depth 1 git://git-annex.branchable.com/ git-annex
+git clone --depth 1 git://git.kitenet.net/git-annex
 cd git-annex
 
 # Enable build flags that need extra C libs, so are not enabled by
