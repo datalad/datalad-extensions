@@ -22,7 +22,7 @@ jobs:
     - name: Set up system
       shell: bash
       run: |
-        brew install --bottle libmagic pkg-config
+        brew install libmagic pkg-config
 
     - name: Checkout this repository
       uses: actions/checkout@v1
