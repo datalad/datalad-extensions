@@ -35,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-macos-dmg
-          path: tmp/git-annex.dmg
+          path: git-annex/tmp/git-annex.dmg
 
   test-annex:
     runs-on: macos-latest
