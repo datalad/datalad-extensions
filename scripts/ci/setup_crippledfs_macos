@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+set -eu
+
+name="$1"
+size="$2"
+
+image="$name.dmg"
+
+hdiutil create -megabytes "$size" -fs FAT32 -volname "$name" "$image"
+hdiutil attach "$image"

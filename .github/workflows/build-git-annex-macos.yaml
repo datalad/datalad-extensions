@@ -1,0 +1,202 @@
+name: Build git-annex snapshot for macOS
+
+on:
+  # Trigger the workflow on pull request,
+  pull_request:
+    paths:
+      - '.github/workflows/build-git-annex-macos.yaml'
+  schedule:
+    - cron: '30 01 * * *'
+
+env:
+  LANG: C
+
+jobs:
+  build-package:
+    runs-on: macos-latest
+    strategy:
+      # Do not fail fast so we could upload full build log and possible source
+      # pkgs even if binary package building fails
+      fail-fast: false
+    steps:
+    - name: Set up system
+      shell: bash
+      run: |
+        brew install --bottle libmagic pkg-config
+
+    - name: Checkout this repository
+      uses: actions/checkout@v1
+
+    - name: Building it all
+      run: |
+        scripts/ci/build_git_annex_macos
+
+    - name: Upload packages
+      uses: actions/upload-artifact@v2-preview
+      with:
+          name: git-annex-macos-dmg
+          path: tmp/git-annex.dmg
+
+  test-annex:
+    runs-on: macos-latest
+    needs: build-package
+    strategy:
+      matrix:
+        flavor: [normal, crippled-tmp, crippled-home]
+      fail-fast: false
+
+    steps:
+      - name: Download git-annex package
+        uses: actions/download-artifact@v2-preview
+        with:
+          name: git-annex-macos-dmg
+
+      - name: Install git-annex package
+        run: |
+          hdiutil attach git-annex.dmg
+          rsync -a /Volumes/git-annex/git-annex.app /Applications/
+          hdiutil detach /Volumes/git-annex/
+
+      - name: Add git-annex to PATH
+        run: |
+          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+
+      - name: Checkout this repository for scripts/ci
+        uses: actions/checkout@v1
+
+      - name: Set up system
+        shell: bash
+        run: |
+          if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
+            scripts/ci/setup_crippledfs crippledfs 500
+          fi
+
+      - name: Run tests
+        run: |
+          case "${{ matrix.flavor }}" in
+            crippled-tmp)
+              # forces all test repos/paths into the VFAT FS
+              export TMPDIR=/Volumes/crippledfs
+              ;;
+            crippled-home)
+              export HOME=/Volumes/crippledfs
+              ;;
+            normal)
+              ;;
+            *)
+              echo "Unknown flavor ${{ matrix.flavor }}"
+              exit 1
+          esac
+
+          # Do it after we possibly setup HOME
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+          cd $HOME
+          export | grep -e crippledfs || :
+
+          git annex test
+
+  test-annex-more:
+    runs-on: macos-latest
+    needs: build-package
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Download git-annex package
+        uses: actions/download-artifact@v2-preview
+        with:
+          name: git-annex-macos-dmg
+
+      - name: Install git-annex package
+        run: |
+          hdiutil attach git-annex.dmg
+          rsync -a /Volumes/git-annex/git-annex.app /Applications/
+          hdiutil detach /Volumes/git-annex/
+
+      - name: Add git-annex to PATH
+        run: |
+          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+
+      - name: Seek of dynlibs
+        run: |
+          mkdir /tmp/testrepo; cd /tmp/testrepo; git init
+          function nfailed() {
+            strace -f git-annex "$1" 2>&1 | awk "/$2.*ENOENT/{print}" | tee /dev/fd/2 | wc -l
+          }
+          # We should get some reasonable number (not 40) of directories look up for dynamic libraries
+          liblookups=
+          PS4='> '; set -x
+          test $(nfailed version "libpcre.*so") -lt 5
+          test $(nfailed init "libpcre.*so") -lt 130
+
+
+  test-datalad:
+    runs-on: macos-latest
+    needs: build-package
+    strategy:
+      matrix:
+        version: [master, maint, release]
+      fail-fast: false
+
+    steps:
+      - name: Download git-annex package
+        uses: actions/download-artifact@v2-preview
+        with:
+          name: git-annex-macos-dmg
+
+      - name: Install git-annex package
+        run: |
+          hdiutil attach git-annex.dmg
+          rsync -a /Volumes/git-annex/git-annex.app /Applications/
+          hdiutil detach /Volumes/git-annex/
+
+      - name: Add git-annex to PATH
+        run: |
+          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+
+      - name: Set up SSH target
+        shell: bash
+        # TODO: Drop the release condition once 0.13.2 is released.
+        run: |
+          if [ "${{ matrix.version }}" != "release" ]; then
+            curl -fSsL \
+              https://raw.githubusercontent.com/datalad/datalad/master/tools/ci/prep-travis-forssh.sh \
+              | bash;
+            echo "::set-env name=DATALAD_TESTS_SSH::1";
+          fi
+
+      - name: Set up environment
+        run: |
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: install ${{ matrix.version }} datalad
+        run: |
+          if [ "${{ matrix.version }}" = "release" ]; then
+            commitish=$(curl -s https://api.github.com/repos/datalad/datalad/releases/latest | awk '/"tag_name"/{print $2}' | sed -e 's,[",],,g');
+          else
+            commitish="${{ matrix.version }}";
+          fi
+          python -m pip install --upgrade pip
+          pip install https://github.com/datalad/datalad/archive/${commitish}.zip
+
+      - name: Install nose et al (just in case!)
+        run: |
+          pip install nose vcrpy mock
+
+      - name: WTF!?
+        run: |
+          datalad wtf
+
+      - name: Run datalad tests
+        run: |
+          mkdir -p __testhome__
+          cd __testhome__
+          python -m nose -s -v datalad
