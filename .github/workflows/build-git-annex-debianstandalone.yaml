@@ -40,6 +40,7 @@ jobs:
 
     - name: Building it all
       run: |
+        echo building
         DEB_BUILD_OPTIONS=nocheck scripts/ci/build_git_annex /tmp/annex-build
 
     - name: Cleanup before bundling upload
