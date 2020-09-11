@@ -13,6 +13,11 @@ hash git          # needs git
 hash singularity  # needs singularity
 hash chronic      # needs chronic from moreutils
 
+PS4='> '
+set -x
+
+singularity --version
+
 # Temporary to check if all is good when just builds fine without testing
 # export DEB_BUILD_OPTIONS="nocheck"
 
