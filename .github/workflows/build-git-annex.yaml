@@ -284,6 +284,13 @@ jobs:
         # TODO: Drop the release condition once 0.13.2 is released.
         run: |
           if [ "${{ matrix.version }}" != "release" ]; then
+            if [ "${{ runner.os }}" = macOS ]; then
+              # coreutils provides a readlink that supports `-f`
+              brew install coreutils docker docker-machine
+              docker-machine create --driver virtualbox default
+              eval "$(docker-machine env default)"
+              export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+            fi
             curl -fSsL \
               https://raw.githubusercontent.com/datalad/datalad/master/tools/ci/prep-travis-forssh.sh \
               | bash;
