@@ -24,20 +24,23 @@ jobs:
           - ubuntu-latest
           - macos-latest
     steps:
-    - name: Set up system (Ubuntu)
+    - name: Set up system
       shell: bash
       run: |
-        bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
-        sudo apt-get update -qq
-        sudo apt-get install eatmydata
-        sudo eatmydata apt-get install singularity-container gnupg moreutils strace
-      if: ${{ runner.os == 'Linux' }}
-
-    - name: Set up system (macOS)
-      shell: bash
-      run: |
-        brew install libmagic pkg-config
-      if: ${{ runner.os == 'macOS' }}
+        case "${{ runner.os }}" in
+            Linux)
+                bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
+                sudo apt-get update -qq
+                sudo apt-get install eatmydata
+                sudo eatmydata apt-get install singularity-container gnupg moreutils strace
+                ;;
+            macOS)
+                brew install libmagic pkg-config
+                ;;
+            *)
+                echo "Unknown OS ${{ runner.os }}"
+                exit 1
+        esac
 
     - name: Checkout this repository
       uses: actions/checkout@v1
@@ -49,19 +52,21 @@ jobs:
         # public key for verification
         cat resources/datalad-builder-key.asc | gpg --import
 
-    - name: Building it all (Ubuntu)
+    - name: Building it all
       run: |
-        DEB_BUILD_OPTIONS=nocheck scripts/ci/build_git_annex /tmp/annex-build
-      if: ${{ runner.os == 'Linux' }}
-
-    - name: Building it all (macOS)
-      run: |
-        scripts/ci/build_git_annex_macos
-      if: ${{ runner.os == 'macOS' }}
-
-    - name: Cleanup before bundling upload (Ubuntu)
-      run: find /tmp/annex-build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
-      if: ${{ runner.os == 'Linux' }}
+        case "${{ runner.os }}" in
+            Linux)
+                DEB_BUILD_OPTIONS=nocheck scripts/ci/build_git_annex /tmp/annex-build
+                # Cleanup before bundling upload
+                find /tmp/annex-build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
+                ;;
+            macOS)
+                scripts/ci/build_git_annex_macos
+                ;;
+            *)
+                echo "Unknown OS ${{ runner.os }}"
+                exit 1
+        esac
 
     - name: Upload packages (Ubuntu)
       uses: actions/upload-artifact@v2-preview
@@ -105,28 +110,28 @@ jobs:
           name: git-annex-debianstandalone-packages
         if: ${{ runner.os == 'Linux' }}
 
-      - name: Install git-annex package (Ubuntu)
-        run: |
-          sudo dpkg -i git-annex*.deb
-        if: ${{ runner.os == 'Linux' }}
-
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
           name: git-annex-macos-dmg
         if: ${{ runner.os == 'macOS' }}
 
-      - name: Install git-annex package (macOS)
+      - name: Install git-annex package
         run: |
-          hdiutil attach git-annex.dmg
-          rsync -a /Volumes/git-annex/git-annex.app /Applications/
-          hdiutil detach /Volumes/git-annex/
-        if: ${{ runner.os == 'macOS' }}
-
-      - name: Add git-annex to PATH (macOS)
-        run: |
-          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
-        if: ${{ runner.os == 'macOS' }}
+          case "${{ runner.os }}" in
+              Linux)
+                  sudo dpkg -i git-annex*.deb
+                  ;;
+              macOS)
+                  hdiutil attach git-annex.dmg
+                  rsync -a /Volumes/git-annex/git-annex.app /Applications/
+                  hdiutil detach /Volumes/git-annex/
+                  echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+                  ;;
+              *)
+                  echo "Unknown OS ${{ runner.os }}"
+                  exit 1
+          esac
 
       - name: Print git-annex version
         run: |
@@ -196,28 +201,28 @@ jobs:
           name: git-annex-debianstandalone-packages
         if: ${{ runner.os == 'Linux' }}
 
-      - name: Install git-annex package (Ubuntu)
-        run: |
-          sudo dpkg -i git-annex*.deb
-        if: ${{ runner.os == 'Linux' }}
-
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
           name: git-annex-macos-dmg
         if: ${{ runner.os == 'macOS' }}
 
-      - name: Install git-annex package (macOS)
+      - name: Install git-annex package
         run: |
-          hdiutil attach git-annex.dmg
-          rsync -a /Volumes/git-annex/git-annex.app /Applications/
-          hdiutil detach /Volumes/git-annex/
-        if: ${{ runner.os == 'macOS' }}
-
-      - name: Add git-annex to PATH (macOS)
-        run: |
-          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
-        if: ${{ runner.os == 'macOS' }}
+          case "${{ runner.os }}" in
+              Linux)
+                  sudo dpkg -i git-annex*.deb
+                  ;;
+              macOS)
+                  hdiutil attach git-annex.dmg
+                  rsync -a /Volumes/git-annex/git-annex.app /Applications/
+                  hdiutil detach /Volumes/git-annex/
+                  echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+                  ;;
+              *)
+                  echo "Unknown OS ${{ runner.os }}"
+                  exit 1
+          esac
 
       - name: Seek of dynlibs
         run: |
@@ -250,28 +255,28 @@ jobs:
           name: git-annex-debianstandalone-packages
         if: ${{ runner.os == 'Linux' }}
 
-      - name: Install git-annex package (Ubuntu)
-        run: |
-          sudo dpkg -i git-annex*.deb
-        if: ${{ runner.os == 'Linux' }}
-
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
           name: git-annex-macos-dmg
         if: ${{ runner.os == 'macOS' }}
 
-      - name: Install git-annex package (macOS)
+      - name: Install git-annex package
         run: |
-          hdiutil attach git-annex.dmg
-          rsync -a /Volumes/git-annex/git-annex.app /Applications/
-          hdiutil detach /Volumes/git-annex/
-        if: ${{ runner.os == 'macOS' }}
-
-      - name: Add git-annex to PATH (macOS)
-        run: |
-          echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
-        if: ${{ runner.os == 'macOS' }}
+          case "${{ runner.os }}" in
+              Linux)
+                  sudo dpkg -i git-annex*.deb
+                  ;;
+              macOS)
+                  hdiutil attach git-annex.dmg
+                  rsync -a /Volumes/git-annex/git-annex.app /Applications/
+                  hdiutil detach /Volumes/git-annex/
+                  echo "::add-path::/Applications/git-annex.app/Contents/MacOS"
+                  ;;
+              *)
+                  echo "Unknown OS ${{ runner.os }}"
+                  exit 1
+          esac
 
       - name: Set up SSH target
         shell: bash
