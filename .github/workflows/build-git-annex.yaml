@@ -89,6 +89,13 @@ jobs:
         # TODO: add , nfs-home
         # https://git-annex.branchable.com/bugs/running_tests_on_NFS_HOME_does_not_exit_cleanly__58___gpgtmp/
         flavor: [normal, crippled-tmp, crippled-home, nfs-tmp]
+        exclude:
+          # TODO: Add "crippled-home" back in once we figure out how to stop it
+          # from hanging
+          - os: macos-latest
+            flavor: crippled-home
+          - os: macos-latest
+            flavor: nfs-tmp
       fail-fast: false
 
     steps:
