@@ -135,21 +135,11 @@ jobs:
       - name: Checkout this repository for scripts/ci
         uses: actions/checkout@v1
 
-      - name: Set up system
-        shell: bash
+      - name: Run tests
         run: |
           if echo "${{ matrix.flavor }}" | grep -q "crippled" ; then
-            case `uname` in
-                Linux)
-                    scripts/ci/setup_crippledfs /crippledfs 500
-                    ;;
-                Darwin)
-                    scripts/ci/setup_crippledfs_macos crippledfs 500
-                    ;;
-                *)
-                    echo "Unknown OS $(uname)"
-                    exit 1
-            esac
+            # source so that CRIPPLEDFS_PATH will be set:
+            . scripts/ci/setup_crippledfs crippledfs 500
           fi
           if echo "${{ matrix.flavor }}" | grep -q "nfs" ; then
             mkdir /tmp/nfsmount_ /tmp/nfsmount
@@ -159,27 +149,13 @@ jobs:
             sudo mount -t nfs localhost:/tmp/nfsmount_ /tmp/nfsmount
           fi
 
-      - name: Run tests
-        run: |
-          case `uname` in
-              Linux)
-                  crippledfs=/crippledfs
-                  ;;
-              Darwin)
-                  crippledfs=/Volumes/crippledfs
-                  ;;
-              *)
-                  echo "Unknown OS $(uname)"
-                  exit 1
-          esac
-
           case "${{ matrix.flavor }}" in
             crippled-tmp)
               # forces all test repos/paths into the VFAT FS
-              export TMPDIR=$crippledfs
+              export TMPDIR="$CRIPPLEDFS_PATH"
               ;;
             crippled-home)
-              export HOME=$crippledfs
+              export HOME="$CRIPPLEDFS_PATH"
               ;;
             nfs-tmp)
               export TMPDIR=/tmp/nfsmount
