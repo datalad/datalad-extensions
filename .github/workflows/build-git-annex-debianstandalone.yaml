@@ -26,7 +26,38 @@ jobs:
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
         sudo apt-get install eatmydata
-        sudo eatmydata apt-get install singularity-container gnupg moreutils strace
+        sudo eatmydata apt-get install gnupg moreutils strace
+
+    # Build singularity from source to see if helps
+    - name: Set env
+      run: |
+        echo ::set-env name=RELEASE_VERSION::v3.5.0
+    - name: Setup Singularity
+      uses: actions/checkout@v2
+      with:
+        repository: hpcng/singularity
+        ref: 'v3.5.0'
+        path: 'singularity'
+    - name: Setup GO
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.13'
+    - name: Install OS deps
+      run: |
+        sudo apt-get update
+        sudo apt-get install flawfinder squashfs-tools uuid-dev libuuid1 libffi-dev libssl-dev libssl1.0.0 \
+        libarchive-dev libgpgme11-dev libseccomp-dev wget gcc make pkg-config -y
+    - name: Build
+      run: |
+        cd singularity
+        ./mconfig --without-suid -p ${{ runner.tool_cache }}/singularity/${{ env.RELEASE_VERSION }}/x64
+        make -C ./builddir
+        sudo make -C ./builddir install
+        cd ..
+    - name: Echo singularity version
+      run: |
+        echo ${{ github.ref }}
+        ${{ runner.tool_cache }}/singularity/${{ env.RELEASE_VERSION }}/x64/bin/singularity --version
 
     - name: Checkout this repository
       uses: actions/checkout@v1
