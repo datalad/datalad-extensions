@@ -59,6 +59,10 @@ jobs:
         echo ${{ github.ref }}
         ${{ runner.tool_cache }}/singularity/${{ env.RELEASE_VERSION }}/x64/bin/singularity --version
 
+    # TODO: we could have had a separate workflow uploaded somewhere
+    # for reuse like e.g. in
+    # https://github.com/eWaterCycle/singularity-versions/blob/ca6ed4a8913de3ae9321e1a7d54c960b99be445c/.github/workflows/dist.yml
+
     - name: Checkout this repository
       uses: actions/checkout@v1
 
@@ -71,8 +75,9 @@ jobs:
 
     - name: Building it all
       run: |
-        echo building
-        DEB_BUILD_OPTIONS=nocheck scripts/ci/build_git_annex /tmp/annex-build
+        PATH=${{ runner.tool_cache }}/singularity/${{ env.RELEASE_VERSION }}/x64/bin/:$PATH \
+        DEB_BUILD_OPTIONS=nocheck \
+        scripts/ci/build_git_annex /tmp/annex-build
 
     - name: Cleanup before bundling upload
       run: find /tmp/annex-build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
