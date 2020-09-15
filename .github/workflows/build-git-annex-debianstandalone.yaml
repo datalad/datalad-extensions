@@ -31,12 +31,12 @@ jobs:
     # Build singularity from source to see if helps
     - name: Set env
       run: |
-        echo ::set-env name=RELEASE_VERSION::v3.5.0
+        echo ::set-env name=RELEASE_VERSION::v3.6.3
     - name: Setup Singularity
       uses: actions/checkout@v2
       with:
         repository: hpcng/singularity
-        ref: 'v3.5.0'
+        ref: 'v3.6.3'
         path: 'singularity'
     - name: Setup GO
       uses: actions/setup-go@v2
