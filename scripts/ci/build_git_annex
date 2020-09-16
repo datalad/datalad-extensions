@@ -13,10 +13,10 @@ hash git          # needs git
 hash singularity  # needs singularity
 hash chronic      # needs chronic from moreutils
 
+build=native  # or singularity?  For native it will need sudo to adjust apt and install build-depends
+
 PS4='> '
 set -x
-
-singularity --version
 
 # Temporary to check if all is good when just builds fine without testing
 # export DEB_BUILD_OPTIONS="nocheck"
@@ -52,21 +52,38 @@ else
   git clone "$origin" git-annex
 fi
 
-if [ -e "buildenv.sif" ]; then
-  echo "I: Reusing present singularity image"
-else
-  echo "I: Getting the git-annex build environment container"
-  chronic singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
-fi
-
 echo "I: Cleaning up"
 rm -rf git-annex[-_]*
 
+case "$build" in
+	singularity)
+		singularity --version
+		if [ -e "buildenv.sif" ]; then
+			echo "I: Reusing present singularity image"
+		else
+			echo "I: Getting the git-annex build environment container"
+			chronic singularity pull --name buildenv.sif shub://datalad/datalad-extensions:buildenv-git-annex-buster
+		fi
+		CMD=( singularity exec ./buildenv.sif )
+		;;
+	native)
+		if ! grep '^deb-src' /etc/apt/sources.list; then
+			sudo bash -c "sed -n -e '/^deb /s,^deb ,deb-src ,gp' /etc/apt/sources.list > /etc/apt/sources.list.d/sources.list"
+		fi
+		sudo apt-get update
+		sudo apt-get build-dep git-annex
+		CMD=( )
+		;;
+	*)
+		echo "Unknown type of build $build" >&2
+		exit 1
+esac
+
 echo "I: Build source packages"
-chronic singularity exec ./buildenv.sif make -C git-annex debianstandalone-dsc
+chronic ${CMD[*]} make -C git-annex debianstandalone-dsc
 
 echo "I: Build binary package from the source package."
-if ! singularity --debug exec ./buildenv.sif \
+if ! ${CMD[*]} \
      bash -c 'set -x; export LANG=C; dpkg-source -x *.dsc git-annex-source && cd git-annex-source && dpkg-buildpackage -b' >| "${bbuild_log}" 2>&1; then
        echo "E: build failed"
        echo "I: the tail of the log"
