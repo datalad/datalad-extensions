@@ -28,6 +28,17 @@ jobs:
         sudo apt-get install eatmydata
         sudo eatmydata apt-get install gnupg moreutils strace
 
+    - name: Various system info
+      shell: bash
+      run: |
+        PS4='> '
+        set -x
+        pwd
+        uname -a
+        df -h
+        mount
+        ulimit -a
+
     # Build singularity from source to see if helps
     - name: Set env
       run: |
