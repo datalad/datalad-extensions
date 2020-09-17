@@ -63,10 +63,10 @@ echo "I: Cleaning up"
 rm -rf git-annex[-_]*
 
 echo "I: Build source packages"
-chronic singularity exec ./buildenv.sif make -C git-annex debianstandalone-dsc
+singularity --debug exec ./buildenv.sif make -C git-annex debianstandalone-dsc
 
 echo "I: Build binary package from the source package."
-if ! singularity exec ./buildenv.sif \
+if ! singularity --debug exec ./buildenv.sif \
      bash -c 'set -x; export LANG=C; dpkg-source -x *.dsc git-annex-source && cd git-annex-source && dpkg-buildpackage -b' >| "${bbuild_log}" 2>&1; then
        echo "E: build failed"
        echo "I: the tail of the log"
