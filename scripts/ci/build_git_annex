@@ -62,6 +62,9 @@ fi
 echo "I: Cleaning up"
 rm -rf git-annex[-_]*
 
+ls -l /dev/loop0  /var/lib/singularity/mnt/container || :
+ls -l /var/lib/singularity/mnt/ -d  || :
+
 echo "I: Build source packages"
 singularity --debug exec ./buildenv.sif make -C git-annex debianstandalone-dsc
 
