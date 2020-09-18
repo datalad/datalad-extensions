@@ -5,12 +5,12 @@ set -eu
 name="$1"
 size="$2"
 
-image="/tmp/$name.img"
-
 case `uname` in
     Linux)
         sudo apt-get update -qq
         sudo apt-get install dosfstools
+
+        image="/tmp/$name.img"
 
         # VFAT FS in a box
         sudo dd if=/dev/zero "of=$image" "count=$size" bs=1M
@@ -22,6 +22,7 @@ case `uname` in
         sudo mount -o "uid=$(id -u),gid=$(id -g)" "$image" "$CRIPPLEDFS_PATH"
         ;;
     Darwin)
+        image="/tmp/$name.dmg"
         hdiutil create -megabytes "$size" -fs FAT32 -volname "$name" "$image"
         hdiutil attach "$image"
         CRIPPLEDFS_PATH="/Volumes/$name"
