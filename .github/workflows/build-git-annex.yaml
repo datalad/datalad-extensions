@@ -310,7 +310,7 @@ jobs:
       - name: install ${{ matrix.version }} datalad
         run: |
           if [ "${{ matrix.version }}" = "release" ]; then
-            commitish=$(curl -s https://api.github.com/repos/datalad/datalad/releases/latest | awk '/"tag_name"/{print $2}' | sed -e 's,[",],,g');
+            commitish="$(curl -fsSL https://api.github.com/repos/datalad/datalad/releases/latest | jq -r .tag_name)"
           else
             commitish="${{ matrix.version }}";
           fi
