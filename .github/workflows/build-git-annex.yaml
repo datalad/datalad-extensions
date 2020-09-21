@@ -310,7 +310,8 @@ jobs:
       - name: install ${{ matrix.version }} datalad
         run: |
           if [ "${{ matrix.version }}" = "release" ]; then
-            commitish="$(curl -fsSL https://api.github.com/repos/datalad/datalad/releases/latest | jq -r .tag_name)"
+            # Authorize so that we don't run up against low API rate limits
+            commitish="$(curl -fsSL -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/datalad/datalad/releases/latest | jq -r .tag_name)"
           else
             commitish="${{ matrix.version }}";
           fi
