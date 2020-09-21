@@ -245,7 +245,8 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          # TODO: Re-enable macOS testing once it passes reliably
+          #- macos-latest
         version: [master, maint, release]
       fail-fast: false
 
