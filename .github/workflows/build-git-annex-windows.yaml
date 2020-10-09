@@ -1,0 +1,64 @@
+name: Build git-annex snapshot on Windows
+
+on:
+  # Trigger the workflow on pull request,
+  pull_request:
+    paths:
+      - '.github/workflows/build-git-annex-windows.yaml'
+  schedule:
+    - cron: '30 01 * * *'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  LANG: C
+
+jobs:
+  build-package:
+    runs-on: windows-latest
+    steps:
+    - name: Install NSIS
+      shell: powershell
+      run: |
+        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+        scoop bucket add extras
+        scoop install nsis
+
+    - name: Checkout this repository
+      uses: actions/checkout@v1
+
+    - name: Build
+      run: scripts/ci/build_git_annex_windows
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2-preview
+      with:
+          name: git-annex-windows-installer
+          path: git-annex/git-annex-installer.exe
+
+  test-annex:
+    runs-on: windows-latest
+    needs: build-package
+    steps:
+    - name: Download git-annex installer
+      uses: actions/download-artifact@v2-preview
+      with:
+        name: git-annex-windows-installer
+
+    - name: Install git-annex package
+      run: ./git-annex-installer.exe
+
+    - name: Print git-annex version
+      run: |
+        git annex version
+
+    - name: Run tests
+      run: |
+        # Do it after we possibly setup HOME
+        git config --global user.email "test@github.land"
+        git config --global user.name "GitHub Almighty"
+
+        cd $HOME
+        git annex test

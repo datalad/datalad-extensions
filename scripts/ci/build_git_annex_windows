@@ -1,0 +1,33 @@
+#!/bin/sh
+# Based on standalone/windows/build.sh in the git-annex source
+
+set -x
+set -e
+
+# We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
+git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
+cd git-annex
+git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
+git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
+
+# This tells git-annex where to upgrade itself from.
+UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe
+export UPGRADE_LOCATION
+
+stack --version
+
+# Get stack build environment set up before trying to build any binaries.
+stack setup
+stack build --only-dependencies
+
+# Update version info for git rev being built.
+mkdir -p dist
+stack ghc --no-haddock Build/BuildVersion.hs
+./Build/BuildVersion > dist/build-version
+
+# Build git-annex
+stack build --no-haddock .
+
+# Build the installer
+stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+./Build/NullSoftInstaller
