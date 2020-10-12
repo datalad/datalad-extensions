@@ -29,20 +29,14 @@ jobs:
     - name: Checkout this repository
       uses: actions/checkout@v1
 
-    - name: Symlink repository in order to shorten paths
-      run: |
-        mkdir -p /d/a
-        ln -s "$GITHUB_WORKSPACE" /d/a/dlext
-
     - name: Build
       run: bash scripts/ci/build_git_annex_windows
-      working-directory: D:\a\dlext
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-windows-installer
-          path: D:\a\dlext\git-annex\git-annex-installer.exe
+          path: C:\Temp\git-annex\git-annex-installer.exe
 
   test-annex:
     runs-on: windows-latest

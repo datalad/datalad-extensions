@@ -4,6 +4,8 @@
 set -x
 set -e
 
+cd /c/Temp
+
 # We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
 git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
 cd git-annex
