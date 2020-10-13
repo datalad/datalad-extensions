@@ -19,13 +19,6 @@ jobs:
   build-package:
     runs-on: windows-latest
     steps:
-    - name: Install NSIS
-      shell: powershell
-      run: |
-        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-        scoop bucket add extras
-        scoop install nsis
-
     - name: Checkout this repository
       uses: actions/checkout@v1
 
