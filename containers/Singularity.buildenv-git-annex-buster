@@ -6,6 +6,8 @@ From: neurodebian:buster
     sed -i -e 's,^#deb-src,deb-src,g' /etc/apt/sources.list.d/neurodebian.sources.list
     apt-get update -qq
     DEBIAN_FRONTEND=noninteractive apt-get build-dep -y -q git-annex-standalone
+    # Needed additional build-depends which might have not yet in "released" version
+    apt-get install -y libghc-criterion-dev
     # Needed additional tools
     apt-get install -y devscripts quilt
     # Some helper utilities just in case
