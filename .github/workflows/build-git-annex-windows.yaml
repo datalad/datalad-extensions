@@ -46,7 +46,8 @@ jobs:
         name: git-annex-windows-installer
 
     - name: Install git-annex package
-      run: ./git-annex-installer.exe
+      shell: powershell
+      run: git-annex-installer.exe /S
 
     - name: Print git-annex version
       run: |
