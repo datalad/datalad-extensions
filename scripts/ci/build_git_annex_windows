@@ -28,7 +28,7 @@ stack ghc --no-haddock Build/BuildVersion.hs
 ./Build/BuildVersion > dist/build-version
 
 # Build git-annex
-stack build --no-haddock .
+stack install --no-haddock --local-bin-path .
 
 # Build the installer
 stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
