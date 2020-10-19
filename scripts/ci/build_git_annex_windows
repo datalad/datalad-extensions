@@ -40,5 +40,8 @@ stack ghc --no-haddock Build/BuildVersion.hs
 stack install --no-haddock --local-bin-path .
 
 # Build the installer
-stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
-./Build/NullSoftInstaller
+#stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+#./Build/NullSoftInstaller
+
+mkdir artifact
+cp git-annex.exe *.dll magic.mgc artifact

@@ -36,28 +36,43 @@ jobs:
     - name: Build
       run: GITHUB_TOKEN=${{ secrets.datalad_github_token }} bash scripts/ci/build_git_annex_windows
 
+    #- name: Upload artifact
+    #  uses: actions/upload-artifact@v2-preview
+    #  with:
+    #      name: git-annex-windows-installer
+    #      path: C:\Temp\git-annex\git-annex-installer.exe
+
     - name: Upload artifact
       uses: actions/upload-artifact@v2-preview
       with:
-          name: git-annex-windows-installer
-          path: C:\Temp\git-annex\git-annex-installer.exe
+          name: git-annex-windows-bundle
+          path: C:\Temp\git-annex\artifact
 
   test-annex:
     runs-on: windows-latest
     needs: build-package
     steps:
-    - name: Download git-annex installer
+    #- name: Download git-annex installer
+    #  uses: actions/download-artifact@v2-preview
+    #  with:
+    #    name: git-annex-windows-installer
+
+    #- name: Install git-annex package
+    #  shell: powershell
+    #  run: ./git-annex-installer.exe /S
+
+    - name: Download git-annex bundle
       uses: actions/download-artifact@v2-preview
       with:
-        name: git-annex-windows-installer
+        name: git-annex-windows-bundle
 
-    - name: Install git-annex package
-      shell: powershell
-      run: ./git-annex-installer.exe /S
+    - name: DEBUG
+      run: ls -R
 
     - name: Print git-annex version
       run: |
-        git annex version
+        #git annex version
+        ./git-annex version
 
     - name: Run tests
       run: |
@@ -66,4 +81,5 @@ jobs:
         git config --global user.name "GitHub Almighty"
 
         cd $HOME
-        git annex test
+        #git annex test
+        ./git-annex test
