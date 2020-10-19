@@ -24,29 +24,88 @@ jobs:
       with:
         enable-stack: true
 
-    - name: Enable Stack cache
-      uses: actions/cache@v2
-      with:
-        path: 'C:\Users\runneradmin\AppData\Roaming\stack'
-        key: git-annex-stack-windows
-
     - name: Checkout this repository
       uses: actions/checkout@v1
 
-    - name: Build
-      run: GITHUB_TOKEN=${{ secrets.datalad_github_token }} bash scripts/ci/build_git_annex_windows
+    - name: Checkout git-annex repository
+      run: |
+        # We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
+        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
+        cd git-annex
+        git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
+        git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
+
+    - name: Download and "install" libmagic for windows
+      run: |
+        TARGET_REPO=datalad/file-windows
+        TARGET_WORKFLOW=build.yml
+        GITHUB_TOKEN="${{ secrets.datalad_github_token }}"
+        . ../scripts/ci/download-latest-artifact
+        cp download/* .
+        cp libmagic-1.dll libmagic.dll
+      working-directory: git-annex
+
+    - name: Enable building with magic
+      run: |
+        perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
+        perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
+      working-directory: git-annex
+
+    - name: Set UPGRADE_LOCATION
+      run: |
+        # This tells git-annex where to upgrade itself from.
+        echo "UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe" >> "$GITHUB_ENV"
+
+    - name: Run stack --version
+      run: stack --version
+
+    - name: stack setup
+      run: stack setup
+      working-directory: git-annex
+
+    # At this point, stack.yaml.lock exists, so we can activate the cache
+
+    - name: Enable Stack cache
+      uses: actions/cache@v2
+      with:
+        path: 'C:\sr\snapshots'
+        key: cache-git-annex-stack-windows-${{ hashFiles('git-annex/stack.yaml.lock') }}-${{ hashFiles('git-annex/git-annex.cabal') }}
+
+    - name: Build dependencies
+      run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
+      working-directory: git-annex
+
+    - name: Update version info for git rev being built.
+      run: |
+        mkdir -p dist
+        stack ghc --no-haddock Build/BuildVersion.hs
+        ./Build/BuildVersion > dist/build-version
+      working-directory: git-annex
+
+    - name: Build git-annex
+      run: stack install --no-haddock --local-bin-path .
+      working-directory: git-annex
+
+    #- name: Build the installer
+    #  run: |
+    #    stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+    #    ./Build/NullSoftInstaller
+    #  working-directory: git-annex
 
     #- name: Upload artifact
     #  uses: actions/upload-artifact@v2-preview
     #  with:
     #      name: git-annex-windows-installer
-    #      path: C:\Temp\git-annex\git-annex-installer.exe
+    #      path: 'git-annex\git-annex-installer.exe'
 
-    - name: Upload artifact
+    - name: Upload artifacts
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-windows-bundle
-          path: C:\Temp\git-annex\artifact
+          path: |
+            git-annex\git-annex.exe
+            git-annex\*.dll
+            git-annex\magic.mgc
 
   test-annex:
     runs-on: windows-latest
