@@ -1,8 +1,7 @@
 #!/bin/sh
 # Based on standalone/windows/build.sh in the git-annex source
 
-set -x
-set -e
+set -ex
 
 cd /c/Temp
 
