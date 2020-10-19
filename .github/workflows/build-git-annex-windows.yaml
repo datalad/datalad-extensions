@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Build
-      run: bash scripts/ci/build_git_annex_windows
+      run: GITHUB_TOKEN=${{ secrets.datalad_github_token }} bash scripts/ci/build_git_annex_windows
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2-preview

@@ -12,6 +12,16 @@ cd git-annex
 git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
 git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
+TARGET_REPO=yarikoptic/file-windows
+TARGET_WORKFLOW=build.yml
+. $GITHUB_WORKSPACE/scripts/ci/download-latest-artifact
+cp download/dist/* .
+cp libmagic-1.dll libmagic.dll
+
+perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
+
+perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
+
 # This tells git-annex where to upgrade itself from.
 UPGRADE_LOCATION=http://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe
 export UPGRADE_LOCATION
@@ -20,7 +30,7 @@ stack --version
 
 # Get stack build environment set up before trying to build any binaries.
 stack setup
-stack build --only-dependencies
+stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
 
 # Update version info for git rev being built.
 mkdir -p dist
