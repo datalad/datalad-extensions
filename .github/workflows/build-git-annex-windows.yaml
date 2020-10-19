@@ -12,9 +12,6 @@ defaults:
   run:
     shell: bash
 
-env:
-  LANG: C
-
 jobs:
   build-package:
     runs-on: windows-latest
