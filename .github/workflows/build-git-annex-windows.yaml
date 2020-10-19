@@ -12,6 +12,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  LANG: C.utf-8
+
 jobs:
   build-package:
     runs-on: windows-latest
