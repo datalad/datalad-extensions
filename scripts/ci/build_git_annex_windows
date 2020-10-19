@@ -12,7 +12,7 @@ cd git-annex
 git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
 git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
-TARGET_REPO=yarikoptic/file-windows
+TARGET_REPO=datalad/file-windows
 TARGET_WORKFLOW=build.yml
 . $GITHUB_WORKSPACE/scripts/ci/download-latest-artifact
 cp download/dist/* .
