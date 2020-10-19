@@ -15,7 +15,7 @@ git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 TARGET_REPO=datalad/file-windows
 TARGET_WORKFLOW=build.yml
 . $GITHUB_WORKSPACE/scripts/ci/download-latest-artifact
-cp download/dist/* .
+cp download/* .
 cp libmagic-1.dll libmagic.dll
 
 perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
