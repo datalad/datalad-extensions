@@ -125,17 +125,17 @@ jobs:
       with:
         name: git-annex-windows-bundle
 
-    - name: Print git-annex version
+    - name: Check git-annex version for MagicMime flag
       run: |
-        #git annex version
-        ./git-annex version
+        #git annex version | grep 'build flags:.*MagicMime'
+        ./git-annex version | grep 'build flags:.*MagicMime'
 
-    - name: Run tests
-      run: |
-        # Do it after we possibly setup HOME
-        git config --global user.email "test@github.land"
-        git config --global user.name "GitHub Almighty"
-
-        #cd $HOME
-        #git annex test
-        ./git-annex test
+    #- name: Run tests
+    #  run: |
+    #    # Do it after we possibly setup HOME
+    #    git config --global user.email "test@github.land"
+    #    git config --global user.name "GitHub Almighty"
+    #
+    #    #cd $HOME
+    #    #git annex test
+    #    ./git-annex test
