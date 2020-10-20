@@ -42,6 +42,7 @@ jobs:
         GITHUB_TOKEN="${{ secrets.datalad_github_token }}"
         . ../scripts/ci/download-latest-artifact
         cp download/* .
+        ### TODO: See if magic-haskell still builds without this line:
         cp libmagic-1.dll libmagic.dll
       working-directory: git-annex
 
@@ -98,7 +99,9 @@ jobs:
           name: git-annex-windows-installer
           path: |
             git-annex\git-annex-installer.exe
-            git-annex\*.dll
+            #git-annex\*.dll
+            git-annex\libgnurx-0.dll
+            git-annex\libmagic-1.dll
             git-annex\magic.mgc
 
   test-annex:
