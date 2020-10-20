@@ -121,6 +121,22 @@ jobs:
       run: |
         git annex version | grep 'build flags:.*MagicMime'
 
+    - name: Test magic capabilities
+      run: |
+        mkdir test
+        cd test
+        git init
+        git annex init
+        echo "* annex.largefiles=(mimeencoding=binary)" > .gitattributes
+        git add .gitattributes
+        git commit -m attrs
+        echo '' > annex
+        echo test > text
+        git annex add *
+        git commit -m "two files"
+        git show -- annex | grep annex/objects
+        git show -- text | grep text
+
     #- name: Run tests
     #  run: |
     #    # Do it after we possibly setup HOME
