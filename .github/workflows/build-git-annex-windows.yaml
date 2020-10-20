@@ -23,6 +23,7 @@ jobs:
       uses: actions/setup-haskell@v1.1
       with:
         enable-stack: true
+        ### TODO: Does adding "stack-no-global: true" here speed things up?
 
     - name: Checkout this repository
       uses: actions/checkout@v1
@@ -44,6 +45,14 @@ jobs:
         cp download/* .
         ### TODO: See if magic-haskell still builds without this line:
         cp libmagic-1.dll libmagic.dll
+      working-directory: C:\Temp\git-annex
+
+    - name: DEBUG
+      run: |
+        pwd
+        ls
+        printf -- '---\n'
+        ls /c/Temp/git-annex
       working-directory: C:\Temp\git-annex
 
     - name: Enable building with magic
