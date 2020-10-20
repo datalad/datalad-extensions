@@ -96,7 +96,7 @@ jobs:
       working-directory: C:\Temp\git-annex
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2-preview
+      uses: actions/upload-artifact@v2
       with:
           name: git-annex-windows-installer
           path: |
