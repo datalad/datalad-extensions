@@ -86,24 +86,18 @@ jobs:
       run: stack install --no-haddock --local-bin-path .
       working-directory: git-annex
 
-    #- name: Build the installer
-    #  run: |
-    #    stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
-    #    ./Build/NullSoftInstaller
-    #  working-directory: git-annex
-
-    #- name: Upload artifact
-    #  uses: actions/upload-artifact@v2-preview
-    #  with:
-    #      name: git-annex-windows-installer
-    #      path: 'git-annex\git-annex-installer.exe'
+    - name: Build the installer
+      run: |
+        stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
+        ./Build/NullSoftInstaller
+      working-directory: git-annex
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2-preview
       with:
-          name: git-annex-windows-bundle
+          name: git-annex-windows-installer
           path: |
-            git-annex\git-annex.exe
+            git-annex\git-annex-installer.exe
             git-annex\*.dll
             git-annex\magic.mgc
 
@@ -111,24 +105,21 @@ jobs:
     runs-on: windows-latest
     needs: build-package
     steps:
-    #- name: Download git-annex installer
-    #  uses: actions/download-artifact@v2-preview
-    #  with:
-    #    name: git-annex-windows-installer
-
-    #- name: Install git-annex package
-    #  shell: powershell
-    #  run: ./git-annex-installer.exe /S
-
-    - name: Download git-annex bundle
+    - name: Download git-annex installer
       uses: actions/download-artifact@v2-preview
       with:
-        name: git-annex-windows-bundle
+        name: git-annex-windows-installer
+
+    - name: Install git-annex package
+      shell: powershell
+      run: ./git-annex-installer.exe /S
+
+    - name: Install dll's
+      run: cp *.dll magic.mgc '/c/Program Files (x86)/Git/usr/bin'
 
     - name: Check git-annex version for MagicMime flag
       run: |
-        #git annex version | grep 'build flags:.*MagicMime'
-        ./git-annex version | grep 'build flags:.*MagicMime'
+        git annex version | grep 'build flags:.*MagicMime'
 
     #- name: Run tests
     #  run: |
@@ -136,6 +127,5 @@ jobs:
     #    git config --global user.email "test@github.land"
     #    git config --global user.name "GitHub Almighty"
     #
-    #    #cd $HOME
-    #    #git annex test
-    #    ./git-annex test
+    #    cd $HOME
+    #    git annex test
