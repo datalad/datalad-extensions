@@ -47,14 +47,6 @@ jobs:
         cp libmagic-1.dll libmagic.dll
       working-directory: C:\Temp\git-annex
 
-    - name: DEBUG
-      run: |
-        pwd
-        ls
-        printf -- '---\n'
-        ls /c/Temp/git-annex
-      working-directory: C:\Temp\git-annex
-
     - name: Enable building with magic
       run: |
         perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
@@ -79,9 +71,11 @@ jobs:
       uses: actions/cache@v2
       with:
         path: 'C:\sr\snapshots'
-        key: cache-git-annex-stack-windows-${{ hashFiles('C:\Temp\git-annex\stack.yaml.lock') }}-${{ hashFiles('C:\Temp\git-annex\git-annex.cabal') }}
+        key: cache-git-annex-stack-windows-2-${{ hashFiles('C:\Temp\git-annex\stack.yaml.lock') }}-${{ hashFiles('C:\Temp\git-annex\git-annex.cabal') }}
+        ### The '-2' was added to the key in order to forcibly start a new
+        ### cache.  TODO: Delete the '-2' eight days after everything works.
         restore-keys: |
-          cache-git-annex-stack-windows-
+          cache-git-annex-stack-windows-2-
 
     - name: Build dependencies
       run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
