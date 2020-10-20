@@ -70,7 +70,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: 'C:\sr\snapshots'
-        key: cache-git-annex-stack-windows-${{ hashFiles('git-annex/stack.yaml.lock') }}-${{ hashFiles('git-annex/git-annex.cabal') }}
+        key: cache-git-annex-stack-windows-${{ hashFiles('C:\Temp\git-annex\stack.yaml.lock') }}-${{ hashFiles('C:\Temp\git-annex\git-annex.cabal') }}
+        restore-keys: |
+          cache-git-annex-stack-windows-
 
     - name: Build dependencies
       run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
