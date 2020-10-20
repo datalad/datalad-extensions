@@ -30,8 +30,8 @@ jobs:
     - name: Checkout git-annex repository
       run: |
         # We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
-        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
-        cd git-annex
+        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex /c/Temp/git-annex
+        cd /c/Temp/git-annex
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
@@ -40,17 +40,17 @@ jobs:
         TARGET_REPO=datalad/file-windows
         TARGET_WORKFLOW=build.yml
         GITHUB_TOKEN="${{ secrets.datalad_github_token }}"
-        . ../scripts/ci/download-latest-artifact
+        . "$GITHUB_WORKSPACE"/scripts/ci/download-latest-artifact
         cp download/* .
         ### TODO: See if magic-haskell still builds without this line:
         cp libmagic-1.dll libmagic.dll
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Enable building with magic
       run: |
         perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
         perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Set UPGRADE_LOCATION
       run: |
@@ -62,7 +62,7 @@ jobs:
 
     - name: stack setup
       run: stack setup
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     # At this point, stack.yaml.lock exists, so we can activate the cache
 
@@ -74,35 +74,36 @@ jobs:
 
     - name: Build dependencies
       run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Update version info for git rev being built.
       run: |
         mkdir -p dist
         stack ghc --no-haddock Build/BuildVersion.hs
         ./Build/BuildVersion > dist/build-version
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Build git-annex
       run: stack install --no-haddock --local-bin-path .
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Build the installer
       run: |
         stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
         ./Build/NullSoftInstaller
-      working-directory: git-annex
+      working-directory: C:\Temp\git-annex
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-windows-installer
           path: |
-            git-annex\git-annex-installer.exe
-            #git-annex\*.dll
-            git-annex\libgnurx-0.dll
-            git-annex\libmagic-1.dll
-            git-annex\magic.mgc
+            C:\Temp\git-annex\git-annex-installer.exe
+            C:\Temp\git-annex\libgnurx-0.dll
+            C:\Temp\git-annex\libmagic-1.dll
+            C:\Temp\git-annex\magic.mgc
+
+         #  C:\Temp\git-annex\*.dll
 
   test-annex:
     runs-on: windows-latest
