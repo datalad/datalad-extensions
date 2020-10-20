@@ -36,6 +36,11 @@ jobs:
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
+    - name: Patch git-annex installer code to bundle magic files
+      run: |
+        patch -p1 < "$GITHUB_WORKSPACE"/resources/git-annex-magicBundle.patch
+      working-directory: C:\Temp\git-annex
+
     - name: Download and "install" libmagic for windows
       run: |
         TARGET_REPO=datalad/file-windows
@@ -102,29 +107,20 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
           name: git-annex-windows-installer
-          path: |
-            C:\Temp\git-annex\git-annex-installer.exe
-            C:\Temp\git-annex\libgnurx-0.dll
-            C:\Temp\git-annex\libmagic-1.dll
-            C:\Temp\git-annex\magic.mgc
-
-         #  C:\Temp\git-annex\*.dll
+          path: C:\Temp\git-annex\git-annex-installer.exe
 
   test-annex:
     runs-on: windows-latest
     needs: build-package
     steps:
     - name: Download git-annex installer
-      uses: actions/download-artifact@v2-preview
+      uses: actions/download-artifact@v2
       with:
         name: git-annex-windows-installer
 
     - name: Install git-annex package
       shell: powershell
       run: ./git-annex-installer.exe /S
-
-    - name: Install dll's
-      run: cp *.dll magic.mgc '/c/Program Files (x86)/Git/usr/bin'
 
     - name: Check git-annex version for MagicMime flag
       run: |
@@ -146,11 +142,10 @@ jobs:
         git show -- annex | grep annex/objects
         git show -- text | grep text
 
-    #- name: Run tests
-    #  run: |
-    #    # Do it after we possibly setup HOME
-    #    git config --global user.email "test@github.land"
-    #    git config --global user.name "GitHub Almighty"
-    #
-    #    cd $HOME
-    #    git annex test
+    - name: Run tests
+      run: |
+        # Do it after we possibly setup HOME
+        git config --global user.email "test@github.land"
+        git config --global user.name "GitHub Almighty"
+        cd $HOME
+        timeout 1800 git annex test
