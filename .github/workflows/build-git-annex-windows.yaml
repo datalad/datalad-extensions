@@ -128,7 +128,7 @@ jobs:
 
     - name: DEBUG
       run: |
-        GIT_ANNEX_PATH="$(type git-annex)"
+        GIT_ANNEX_PATH="$(type -p git-annex)"
         echo "git-annex is at $GIT_ANNEX_PATH"
         GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
         ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx* || true
