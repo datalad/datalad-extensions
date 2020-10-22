@@ -31,15 +31,15 @@ jobs:
     - name: Checkout git-annex repository
       run: |
         # We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
-        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex /c/Temp/git-annex
-        cd /c/Temp/git-annex
+        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
+        cd git-annex
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
     - name: Patch git-annex installer code to bundle magic files
       run: |
         patch -p1 < "$GITHUB_WORKSPACE"/resources/git-annex-magicBundle.patch
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Download and "install" libmagic for windows
       run: |
@@ -50,13 +50,13 @@ jobs:
         cp download/* .
         ### TODO: See if magic-haskell still builds without this line:
         cp libmagic-1.dll libmagic.dll
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Enable building with magic
       run: |
         perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
         perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Set UPGRADE_LOCATION
       run: |
@@ -68,7 +68,7 @@ jobs:
 
     - name: stack setup
       run: stack setup
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     # At this point, stack.yaml.lock exists, so we can activate the cache
 
@@ -76,38 +76,38 @@ jobs:
       uses: actions/cache@v2
       with:
         path: 'C:\sr\snapshots'
-        key: cache-git-annex-stack-windows-2-${{ hashFiles('C:\Temp\git-annex\stack.yaml.lock') }}-${{ hashFiles('C:\Temp\git-annex\git-annex.cabal') }}
-        ### The '-2' was added to the key in order to forcibly start a new
-        ### cache.  TODO: Delete the '-2' eight days after everything works.
+        key: cache-git-annex-stack-windows-3-${{ hashFiles('git-annex\stack.yaml.lock') }}-${{ hashFiles('git-annex\git-annex.cabal') }}
+        ### The '-3' was added to the key in order to forcibly start a new
+        ### cache.  TODO: Delete the '-3' eight days after everything works.
         restore-keys: |
-          cache-git-annex-stack-windows-2-
+          cache-git-annex-stack-windows-3-
 
     - name: Build dependencies
       run: stack build --only-dependencies --extra-include-dirs=$PWD --extra-lib-dirs=$PWD
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Update version info for git rev being built.
       run: |
         mkdir -p dist
         stack ghc --no-haddock Build/BuildVersion.hs
         ./Build/BuildVersion > dist/build-version
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Build git-annex
       run: stack install --no-haddock --local-bin-path .
-      working-directory: C:\Temp\git-annex
+      working-directory: git-annex
 
     - name: Build the installer
       run: |
         stack ghc --no-haddock --package nsis Build/NullSoftInstaller.hs
-        ./Build/NullSoftInstaller
-      working-directory: C:\Temp\git-annex
+        TMP="$PWD" ./Build/NullSoftInstaller
+      working-directory: git-annex
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
           name: git-annex-windows-installer
-          path: C:\Temp\git-annex\git-annex-installer.exe
+          path: git-annex\git-annex-installer.exe
 
   test-annex:
     runs-on: windows-2016
