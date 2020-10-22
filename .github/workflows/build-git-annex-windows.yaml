@@ -141,6 +141,7 @@ jobs:
 
     - name: Test magic capabilities
       run: |
+        set -x
         mkdir test
         cd test
         git init
@@ -153,8 +154,10 @@ jobs:
         git annex add *
         git commit -m "two files"
         git annex sync
-        git show -- annex | grep annex/objects
-        git show -- text | grep text
+        printf -- '\n---\n\n'
+        git --no-pager show -- annex
+        printf -- '\n---\n\n'
+        git --no-pager show -- text
 
     - name: Run tests
       run: |
