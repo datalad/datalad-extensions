@@ -149,15 +149,15 @@ jobs:
         echo "* annex.largefiles=(mimeencoding=binary)" > .gitattributes
         git add .gitattributes
         git commit -m attrs
-        echo '' > annex
-        echo test > text
+        echo '' > empty
+        echo test > plain
         git annex add *
         git commit -m "two files"
         git annex sync
         printf -- '\n---\n\n'
-        git --no-pager show -- annex
+        git --no-pager show master -- empty
         printf -- '\n---\n\n'
-        git --no-pager show master -- text
+        git --no-pager show master -- plain
 
     - name: Run tests
       run: |
