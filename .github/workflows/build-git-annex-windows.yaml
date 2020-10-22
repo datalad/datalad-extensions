@@ -122,16 +122,22 @@ jobs:
       shell: powershell
       run: ./git-annex-installer.exe /S
 
-    - name: Check git-annex version for MagicMime flag
-      run: |
-        git annex version | grep 'build flags:.*MagicMime'
-
-    - name: DEBUG
+    - name: Check that magic files are installed
       run: |
         GIT_ANNEX_PATH="$(type -p git-annex)"
         echo "git-annex is at $GIT_ANNEX_PATH"
         GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
-        ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx* || true
+        ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
+        ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
+
+    - name: Check git-annex version for MagicMime flag
+      run: |
+        git annex version | grep 'build flags:.*MagicMime'
+
+    - name: Configure Git
+      run: |
+        git config --global user.email "test@github.land"
+        git config --global user.name "GitHub Almighty"
 
     - name: Test magic capabilities
       run: |
@@ -146,13 +152,11 @@ jobs:
         echo test > text
         git annex add *
         git commit -m "two files"
+        git annex sync
         git show -- annex | grep annex/objects
         git show -- text | grep text
 
     - name: Run tests
       run: |
-        # Do it after we possibly setup HOME
-        git config --global user.email "test@github.land"
-        git config --global user.name "GitHub Almighty"
         cd $HOME
         timeout 1800 git annex test
