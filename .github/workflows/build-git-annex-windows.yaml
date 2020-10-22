@@ -157,7 +157,7 @@ jobs:
         printf -- '\n---\n\n'
         git --no-pager show -- annex
         printf -- '\n---\n\n'
-        git --no-pager show -- text
+        git --no-pager show master -- text
 
     - name: Run tests
       run: |
