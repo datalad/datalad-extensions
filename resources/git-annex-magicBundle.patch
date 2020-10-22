@@ -9,7 +9,7 @@ index 096eeee29..4440cc980 100644
 +
 +magicDLLs :: [FilePath]
 +#ifdef mingw32_HOST_OS
-+magicDLLs = ["libmagic-1.dll", "libgnurx-0.dll"]
++magicDLLs = ["libmagic.dll", "libgnurx-0.dll"]
 +#else
 +magicDLLs = []
 +#endif
