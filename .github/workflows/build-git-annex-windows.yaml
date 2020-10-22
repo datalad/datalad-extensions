@@ -127,7 +127,7 @@ jobs:
         GIT_ANNEX_PATH="$(type -p git-annex)"
         echo "git-annex is at $GIT_ANNEX_PATH"
         GIT_ANNEX_DIR="$(dirname "$GIT_ANNEX_PATH")"
-        ls "$GIT_ANNEX_DIR"/*magic* "$GIT_ANNEX_DIR"/*gnurx*
+        ls "$GIT_ANNEX_DIR"/*magic*
         ls "$GIT_ANNEX_DIR"/../share/misc/*magic*
 
     - name: Check git-annex version for MagicMime flag
