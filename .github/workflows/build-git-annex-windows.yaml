@@ -48,8 +48,6 @@ jobs:
         GITHUB_TOKEN="${{ secrets.datalad_github_token }}"
         . "$GITHUB_WORKSPACE"/scripts/ci/download-latest-artifact
         cp download/* .
-        ### TODO: See if magic-haskell still builds without this line:
-        cp libmagic-1.dll libmagic.dll
       working-directory: git-annex
 
     - name: Enable building with magic
