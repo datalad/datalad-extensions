@@ -20,10 +20,10 @@ jobs:
     runs-on: windows-2016
     steps:
     - name: Setup Haskell
-      uses: actions/setup-haskell@v1.1
+      uses: actions/setup-haskell@v1.1.3
       with:
         enable-stack: true
-        ### TODO: Does adding "stack-no-global: true" here speed things up?
+        stack-no-global: true
 
     - name: Checkout this repository
       uses: actions/checkout@v1
