@@ -2,7 +2,7 @@ Bootstrap: docker
 From: neurodebian:buster
 
 %post
-    nd_freeze  20201002
+    nd_freeze  20201020
     sed -i -e 's,^#deb-src,deb-src,g' /etc/apt/sources.list.d/neurodebian.sources.list
     apt-get update -qq
     DEBIAN_FRONTEND=noninteractive apt-get build-dep -y -q git-annex-standalone
