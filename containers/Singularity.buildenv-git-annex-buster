@@ -8,7 +8,7 @@ From: neurodebian:buster
     # (later apt as now in sid should be more robust)
     echo 'Acquire::http::Dl-Limit "1000";' >| /etc/apt/apt.conf.d/20snapshots
     echo 'Acquire::https::Dl-Limit "1000";' >> /etc/apt/apt.conf.d/20snapshots
-    echo 'Acquire::Reries "5";' >> /etc/apt/apt.conf.d/20snapshots
+    echo 'Acquire::Retries "5";' >> /etc/apt/apt.conf.d/20snapshots
 
     nd_freeze  20201020
     sed -i -e 's,^#deb-src,deb-src,g' /etc/apt/sources.list.d/neurodebian.sources.list
