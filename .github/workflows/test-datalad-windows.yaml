@@ -28,6 +28,7 @@ jobs:
 
       - name: OpenSSH server setup
         run: |
+          mkdir resources
           Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile resources\openssh.zip
           7z x -o"resources" resources\openssh.zip
 
