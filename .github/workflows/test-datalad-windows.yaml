@@ -18,6 +18,9 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v1
+
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
@@ -43,12 +46,12 @@ jobs:
         run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
       - name: Keys in default place
-        run: ssh-keygen -f C:\Users\appveyor\.ssh\id_rsa -N ""
+        run: ssh-keygen -f %HOME%\.ssh\id_rsa -N ""
 
       - name: Authorize access with these keys
         run: |
-          copy C:\Users\appveyor\.ssh\id_rsa.pub c:\Users\appveyor\.ssh\authorized_keys
-          copy tools\ci\appveyor_ssh_config c:\Users\appveyor\.ssh\config
+          copy %HOME%\.ssh\id_rsa.pub %HOME%\.ssh\authorized_keys
+          copy scripts\ci\appveyor_ssh_config %HOME%\.ssh\config
 
       - name: Fire up service
         run: net start sshd
