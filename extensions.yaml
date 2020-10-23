@@ -34,9 +34,9 @@ extensions:
  datalad_osf:
   pip_depends: [pytest]
   pypi: datalad-osf
-# datalad_hirni:
-#  apt_depends: [dcm2niix, singularity-container]
-#  pypi: datalad-hirni
-#  package: datalad_hirni
-#  github: psychoinformatics-de/datalad-hirni
+ datalad_hirni:
+  apt_depends: [dcm2niix, singularity-container]
+  pypi: datalad-hirni
+  package: datalad_hirni
+  github: psychoinformatics-de/datalad-hirni
  datalad_ukbiobank:
