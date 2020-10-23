@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: '30 01 * * *'
 
+defaults:
+  run:
+    shell: cmd
+
 env:
   DATALAD_TESTS_SSH: 1
 
@@ -20,13 +24,13 @@ jobs:
           python-version: 3.6
 
       - name: Define test host alias
-        shell: cmd
         run: |
           echo. >> %SYSTEMROOT%\System32\drivers\etc\hosts
           echo.127.0.0.1  datalad-test >> %SYSTEMROOT%\System32\drivers\etc\hosts
           echo.127.0.0.1  datalad-test2 >> %SYSTEMROOT%\System32\drivers\etc\hosts
 
       - name: OpenSSH server setup
+        shell: powershell
         run: |
           mkdir resources
           Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile resources\openssh.zip
@@ -36,7 +40,6 @@ jobs:
         run: powershell.exe -ExecutionPolicy Bypass -File resources\OpenSSH-Win32\install-sshd.ps1
 
       - name: Configure service
-        shell: cmd
         run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
       - name: Keys in default place
@@ -57,6 +60,7 @@ jobs:
           ssh datalad-test2 exit
 
       - name: git-annex setup
+        shell: powershell
         run: |
           #Invoke-WebRequest -Uri https://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe -OutFile resources\git-annex-installer.exe
           # specific version mih uses to debug on real win10 box
@@ -137,6 +141,7 @@ jobs:
         working-directory: __testhome__
 
       #- name: Submit coverage to codecov
+      #  shell: powershell
       #  run: |
       #    $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       #    Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
@@ -145,3 +150,4 @@ jobs:
 
       # enable the next to let the build VM block for up to 60min to log in via RDP and debug
       #- run: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+      #  shell: powershell
