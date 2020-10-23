@@ -1,0 +1,144 @@
+name: Test datalad on Windows
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/test-datalad-windows.yaml'
+  schedule:
+    - cron: '30 01 * * *'
+
+env:
+  DATALAD_TESTS_SSH: 1
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+
+      - name: Define test host alias
+        run: |
+          echo. >> %SYSTEMROOT%\System32\drivers\etc\hosts
+          echo.127.0.0.1  datalad-test >> %SYSTEMROOT%\System32\drivers\etc\hosts
+          echo.127.0.0.1  datalad-test2 >> %SYSTEMROOT%\System32\drivers\etc\hosts
+
+      - name: OpenSSH server setup
+        run: |
+          Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile resources\openssh.zip
+          7z x -o"resources" resources\openssh.zip
+
+      - name: Install
+        run: powershell.exe -ExecutionPolicy Bypass -File resources\OpenSSH-Win32\install-sshd.ps1
+
+      - name: Configure service
+        run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+
+      - name: Keys in default place
+        run: ssh-keygen -f C:\Users\appveyor\.ssh\id_rsa -N ""
+
+      - name: Authorize access with these keys
+        run: |
+          copy C:\Users\appveyor\.ssh\id_rsa.pub c:\Users\appveyor\.ssh\authorized_keys
+          copy tools\ci\appveyor_ssh_config c:\Users\appveyor\.ssh\config
+
+      - name: Fire up service
+        run: net start sshd
+
+      - name: Test login
+        run: |
+          ssh -v localhost exit
+          ssh datalad-test exit
+          ssh datalad-test2 exit
+
+      - name: git-annex setup
+        run: |
+          #Invoke-WebRequest -Uri https://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe -OutFile resources\git-annex-installer.exe
+          # specific version mih uses to debug on real win10 box
+          Invoke-WebRequest -Uri http://store.datalad.org/git-annex/windows/git-annex_8.20200309.exe -OutFile resources\git-annex-installer.exe
+          # extract git annex into the system Git installation path
+          7z x -o"C:\\Program Files\Git" resources\git-annex-installer.exe
+
+      - name: Info on how Python is ticking
+        run: python -c "import sys; print(sys.path)"
+
+      - name: Install Datalad
+        # cannot use "full" extra, e.g. because libxmp is N/A, causes unguarded ERRORs
+        run: pip install "datalad[tests,devel-utils] @ https://github.com/datalad/datalad/archive/master.zip"
+
+      # ATM datalad does not pull in colorama, which is needed for color output
+      # on windows
+      - name: Install colorama
+        run: pip install colorama
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+      #- name: Establish baseline, if annex doesn't work, we are not even trying
+      #  run: git annex test
+
+      - run: mkdir __testhome__
+
+      - name: Report basic info
+        run: |
+          git version
+          git annex version
+          datalad wtf
+        working-directory: __testhome__
+
+      # and now this... [keep appending tests that should work!!]
+      - name: Run tests
+        run: python -m nose -s -v -A "not (turtle)" --with-cov --cover-package datalad datalad.core datalad.local datalad.distributed datalad.cmdline datalad.distribution datalad.interface datalad.support datalad.ui
+        working-directory: __testhome__
+
+      # one call per datalad component for now -- to better see what is being tested
+      # remaining fails: test_archives.test_basic_scenario test_datalad.test_basic_scenario_local_url
+
+      #- name: Run more tests
+      #  run: python -m nose -s -v -A "not (turtle)" datalad.customremotes
+      #  working-directory: __testhome__
+
+      # remaining fails: test_http
+
+      - name: Run more tests
+        run: python -m nose -s -v -A "not (turtle)" --with-cov --cover-package datalad datalad.downloaders.tests.test_credentials datalad.downloaders.tests.test_providers datalad.downloaders.tests.test_s3
+        working-directory: __testhome__
+
+      # remaining fails: extractors.tests.test_base test_aggregation test_base  datalad.metadata.extractors.tests.test_datacite_xml
+
+      - name: Run more tests
+        run: python -m nose -s -v -A "not (turtle)" --with-cov --cover-package datalad datalad.metadata.tests.test_search datalad.metadata.tests.test_extract_metadata datalad.metadata.extractors.tests.test_frictionless_datapackage datalad.metadata.extractors.tests.test_rfc822
+        working-directory: __testhome__
+
+      # remaining fails: test_addurls test_export_archive test_plugins"
+      # additional tests need module `dateutil`!!
+
+      - name: Run more tests
+        run: python -m nose -s -v -A "not (turtle)" --with-cov --cover-package datalad datalad.plugin.tests.test_check_dates
+        working-directory: __testhome__
+
+      # remaining fails: test__main__ test_cmd test_log  test_protocols test_test_utils test_auto
+
+      - name: Run more tests
+        run: python -m nose -s -v -A "not (turtle)" --with-cov --cover-package datalad datalad.tests.test_utils datalad.tests.test_api datalad.tests.test_base datalad.tests.test_config datalad.tests.test_constraints datalad.tests.test_dochelpers datalad.tests.test_installed datalad.tests.test_interface datalad.tests.test_misc datalad.tests.test_s3 datalad.tests.test_testrepos datalad.tests.test_utils_testrepos datalad.tests.test_archives datalad.tests.test_witless_runner
+        working-directory: __testhome__
+
+      # prepare coverage.xml in a separate invocation.  If invoked directly
+      # with nose - do not include test_ files themselves
+      - name: Generate coverage report
+        run: python -m coverage xml
+        working-directory: __testhome__
+
+      #- name: Submit coverage to codecov
+      #  run: |
+      #    $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+      #    Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      #    bash codecov.sh -f "coverage.xml"
+      #  working-directory: __testhome__
+
+      # enable the next to let the build VM block for up to 60min to log in via RDP and debug
+      #- run: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
