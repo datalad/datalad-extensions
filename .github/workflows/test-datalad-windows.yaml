@@ -35,12 +35,12 @@ jobs:
       - name: OpenSSH server setup
         shell: powershell
         run: |
-          mkdir resources
-          Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile resources\openssh.zip
-          7z x -o"resources" resources\openssh.zip
+          mkdir downloads
+          Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile downloads\openssh.zip
+          7z x -o"downloads" downloads\openssh.zip
 
       - name: Install
-        run: powershell.exe -ExecutionPolicy Bypass -File resources\OpenSSH-Win32\install-sshd.ps1
+        run: powershell.exe -ExecutionPolicy Bypass -File downloads\OpenSSH-Win32\install-sshd.ps1
 
       - name: Configure service
         run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
@@ -65,11 +65,11 @@ jobs:
       - name: git-annex setup
         shell: powershell
         run: |
-          #Invoke-WebRequest -Uri https://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe -OutFile resources\git-annex-installer.exe
+          #Invoke-WebRequest -Uri https://downloads.kitenet.net/git-annex/windows/current/git-annex-installer.exe -OutFile downloads\git-annex-installer.exe
           # specific version mih uses to debug on real win10 box
-          Invoke-WebRequest -Uri http://store.datalad.org/git-annex/windows/git-annex_8.20200309.exe -OutFile resources\git-annex-installer.exe
+          Invoke-WebRequest -Uri http://store.datalad.org/git-annex/windows/git-annex_8.20200309.exe -OutFile downloads\git-annex-installer.exe
           # extract git annex into the system Git installation path
-          7z x -o"C:\\Program Files\Git" resources\git-annex-installer.exe
+          7z x -o"C:\\Program Files\Git" downloads\git-annex-installer.exe
 
       - name: Info on how Python is ticking
         run: python -c "import sys; print(sys.path)"
