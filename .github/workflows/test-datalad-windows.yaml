@@ -20,6 +20,7 @@ jobs:
           python-version: 3.6
 
       - name: Define test host alias
+        shell: cmd
         run: |
           echo. >> %SYSTEMROOT%\System32\drivers\etc\hosts
           echo.127.0.0.1  datalad-test >> %SYSTEMROOT%\System32\drivers\etc\hosts
