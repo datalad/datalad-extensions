@@ -46,12 +46,12 @@ jobs:
         run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
       - name: Keys in default place
-        run: ssh-keygen -f %HOME%\.ssh\id_rsa -N ""
+        run: ssh-keygen -f %USERPROFILE%\.ssh\id_rsa -N ""
 
       - name: Authorize access with these keys
         run: |
-          copy %HOME%\.ssh\id_rsa.pub %HOME%\.ssh\authorized_keys
-          copy scripts\ci\appveyor_ssh_config %HOME%\.ssh\config
+          copy %USERPROFILE%\.ssh\id_rsa.pub %USERPROFILE%\.ssh\authorized_keys
+          copy scripts\ci\appveyor_ssh_config %USERPROFILE%\.ssh\config
 
       - name: Fire up service
         run: net start sshd
