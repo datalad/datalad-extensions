@@ -46,7 +46,8 @@ jobs:
         run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
       - name: Keys in default place
-        run: ssh-keygen -f %USERPROFILE%\.ssh\id_rsa -N ""
+        shell: bash
+        run: ssh-keygen -f ~/.ssh/id_rsa -N ""
 
       - name: Authorize access with these keys
         run: |
