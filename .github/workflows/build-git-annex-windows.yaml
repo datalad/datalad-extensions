@@ -159,4 +159,4 @@ jobs:
     - name: Run tests
       run: |
         cd $HOME
-        timeout 1800 git annex test || true
+        timeout 1800 git annex test
