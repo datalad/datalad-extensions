@@ -13,6 +13,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
     ![Platforms?](https://anaconda.org/conda-forge/git-annex/badges/platforms.svg)
  - Current snapshot build/tests + DataLad tests:
     [![Build git-annex snapshot](https://github.com/datalad/datalad-extensions/workflows/Build%20git-annex%20snapshot/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3A%22Build+git-annex+snapshot%22)
+    [![Build git-annex snapshot on Windows](https://github.com/datalad/datalad-extensions/workflows/Build%20git-annex%20snapshot%20on%20Windows/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3A%22Build+git-annex+snapshot+on+Windows%22)
 
 ## DataLad Status
 
