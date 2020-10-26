@@ -178,8 +178,8 @@ jobs:
           # We should get some reasonable number (not 40) of directories look up for dynamic libraries
           liblookups=
           PS4='> '; set -x
-          test $(nfailed version "libpcre.*so") -lt 5
-          test $(nfailed init "libpcre.*so") -lt 130
+          test $(nfailed version "libpcre.*dll") -lt 5
+          test $(nfailed init "libpcre.*dll") -lt 130
 
   test-datalad:
     runs-on: windows-2016
