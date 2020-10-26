@@ -199,16 +199,50 @@ jobs:
         shell: powershell
         run: ./git-annex-installer.exe /S
 
-      - name: Set up SSH target
-        shell: bash
-        # TODO: Drop the release condition once 0.13.2 is released.
+      - name: Define test host alias
+        shell: cmd
         run: |
-          if [ "${{ matrix.version }}" != "release" ]; then
-            curl -fSsL \
-              https://raw.githubusercontent.com/datalad/datalad/master/tools/ci/prep-travis-forssh.sh \
-              | bash;
-            echo DATALAD_TESTS_SSH=1 >> "$GITHUB_ENV"
-          fi
+          echo. >> %SYSTEMROOT%\System32\drivers\etc\hosts
+          echo.127.0.0.1  datalad-test >> %SYSTEMROOT%\System32\drivers\etc\hosts
+          echo.127.0.0.1  datalad-test2 >> %SYSTEMROOT%\System32\drivers\etc\hosts
+
+      - name: OpenSSH server setup
+        shell: powershell
+        run: |
+          mkdir downloads
+          Invoke-WebRequest -Uri https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.6.1.0p1-Beta/OpenSSH-Win32.zip -OutFile downloads\openssh.zip
+          7z x -o"downloads" downloads\openssh.zip
+
+      - name: Install
+        shell: cmd
+        run: powershell.exe -ExecutionPolicy Bypass -File downloads\OpenSSH-Win32\install-sshd.ps1
+
+      - name: Configure service
+        shell: cmd
+        run: powershell.exe New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+
+      - name: Keys in default place
+        shell: bash
+        run: ssh-keygen -f ~/.ssh/id_rsa -N ""
+
+      - name: Authorize access with these keys
+        shell: cmd
+        run: |
+          copy %USERPROFILE%\.ssh\id_rsa.pub %USERPROFILE%\.ssh\authorized_keys
+          copy scripts\ci\appveyor_ssh_config %USERPROFILE%\.ssh\config
+
+      - name: Fire up service
+        run: net start sshd
+
+      - name: Test login
+        run: |
+          ssh -v localhost exit
+          ssh datalad-test exit
+          ssh datalad-test2 exit
+
+      - name: Enable SSH tests
+        shell: bash
+        run: echo DATALAD_TESTS_SSH=1 >> "$GITHUB_ENV"
 
       - name: Set up environment
         run: |
