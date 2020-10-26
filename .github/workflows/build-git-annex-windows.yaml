@@ -155,3 +155,92 @@ jobs:
       run: |
         cd $HOME
         timeout 1800 git annex test
+
+  test-annex-more:
+    runs-on: windows-2016
+    needs: build-package
+    steps:
+      - name: Download git-annex installer
+        uses: actions/download-artifact@v2
+        with:
+          name: git-annex-windows-installer
+
+      - name: Install git-annex package
+        shell: powershell
+        run: ./git-annex-installer.exe /S
+
+      - name: Seek of dynlibs
+        run: |
+          mkdir /tmp/testrepo; cd /tmp/testrepo; git init
+          function nfailed() {
+            strace -f git-annex "$1" 2>&1 | awk "/$2.*ENOENT/{print}" | tee /dev/fd/2 | wc -l
+          }
+          # We should get some reasonable number (not 40) of directories look up for dynamic libraries
+          liblookups=
+          PS4='> '; set -x
+          test $(nfailed version "libpcre.*so") -lt 5
+          test $(nfailed init "libpcre.*so") -lt 130
+
+  test-datalad:
+    runs-on: windows-2016
+    needs: build-package
+    strategy:
+      matrix:
+        version: [master, maint, release]
+      fail-fast: false
+
+    steps:
+      - name: Download git-annex installer
+        uses: actions/download-artifact@v2
+        with:
+          name: git-annex-windows-installer
+
+      - name: Install git-annex package
+        shell: powershell
+        run: ./git-annex-installer.exe /S
+
+      - name: Set up SSH target
+        shell: bash
+        # TODO: Drop the release condition once 0.13.2 is released.
+        run: |
+          if [ "${{ matrix.version }}" != "release" ]; then
+            curl -fSsL \
+              https://raw.githubusercontent.com/datalad/datalad/master/tools/ci/prep-travis-forssh.sh \
+              | bash;
+            echo DATALAD_TESTS_SSH=1 >> "$GITHUB_ENV"
+          fi
+
+      - name: Set up environment
+        run: |
+          git config --global user.email "test@github.land"
+          git config --global user.name "GitHub Almighty"
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: install ${{ matrix.version }} datalad
+        run: |
+          if [ "${{ matrix.version }}" = "release" ]; then
+            # Authorize so that we don't run up against low API rate limits
+            commitish="$(curl -fsSL -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/datalad/datalad/releases/latest | jq -r .tag_name)"
+          else
+            commitish="${{ matrix.version }}";
+          fi
+          python -m pip install --upgrade pip
+          pip install https://github.com/datalad/datalad/archive/${commitish}.zip
+
+      - name: Install nose et al (just in case!)
+        run: |
+          pip install nose vcrpy mock
+
+      - name: WTF!?
+        run: |
+          datalad wtf
+
+      - name: Run datalad tests
+        run: |
+          mkdir -p __testhome__
+          cd __testhome__
+          python -m nose -s -v datalad
