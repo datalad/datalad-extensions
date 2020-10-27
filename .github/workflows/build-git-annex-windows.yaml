@@ -36,11 +36,6 @@ jobs:
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
 
-    - name: Patch git-annex installer code to bundle magic files
-      run: |
-        patch -p1 < "$GITHUB_WORKSPACE"/resources/git-annex-magicBundle.patch
-      working-directory: git-annex
-
     - name: Download and "install" libmagic for windows
       run: |
         TARGET_REPO=datalad/file-windows
@@ -53,7 +48,6 @@ jobs:
 
     - name: Enable building with magic
       run: |
-        perl -pli -e '$_ = "" if /^\s*if\s*\(\!\s*os\(windows\)\)\s*$/ && $prev =~ /^\s*if\s+flag\(MagicMime\)\s*$/; $prev = $_;' git-annex.cabal
         perl -pli -e 's/magicmime: false/magicmime: true/' stack.yaml
       working-directory: git-annex
 
