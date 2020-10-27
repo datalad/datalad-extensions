@@ -132,24 +132,6 @@ jobs:
         git config --global user.email "test@github.land"
         git config --global user.name "GitHub Almighty"
 
-    - name: Test magic capabilities
-      run: |
-        set -x
-        mkdir test
-        cd test
-        git init
-        git annex init
-        echo "* annex.largefiles=(mimeencoding=binary)" > .gitattributes
-        git add .gitattributes
-        git commit -m attrs
-        echo '' > empty
-        echo test > plain
-        git annex add *
-        git commit -m "two files"
-        git annex sync
-        git show master -- empty | grep annex/objects
-        git show master -- plain | grep plain
-
     - name: Run tests
       run: |
         cd $HOME
