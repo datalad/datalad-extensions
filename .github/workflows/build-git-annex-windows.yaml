@@ -100,7 +100,9 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
           name: git-annex-windows-installer
-          path: git-annex\git-annex-installer.exe
+          path: |
+            git-annex\git-annex-installer.exe
+            git-annex\dist\build-version
 
   test-annex:
     runs-on: windows-2016
