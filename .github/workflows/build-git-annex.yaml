@@ -54,11 +54,17 @@ jobs:
         # public key for verification
         cat resources/datalad-builder-key.asc | gpg --import
 
+    - name: Checkout git-annex repository
+      run: |
+        mkdir -p /tmp/annex-build
+        git clone --depth 1 git://git.kitenet.net/git-annex
+
     - name: Capture build-version
       id: build-version
       run: |
         stack ghc --no-haddock Build/BuildVersion.hs
         echo "::set-output name=version::$(./Build/BuildVersion)"
+      working-directory: /tmp/annex-build/git-annex
 
     - name: Building it all
       run: |
@@ -69,7 +75,8 @@ jobs:
                 find /tmp/annex-build -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0 rm -rf
                 ;;
             macOS)
-                scripts/ci/build_git_annex_macos
+                cd /tmp/annex-build/git-annex
+                "$GITHUB_WORKSPACE"/scripts/ci/build_git_annex_macos
                 ;;
             *)
                 echo "Unknown OS ${{ runner.os }}"
@@ -88,7 +95,7 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-macos-dmg-${{ steps.build-version.outputs.version }}
-          path: git-annex/tmp/git-annex.dmg
+          path: /tmp/annex-build/git-annex/tmp/git-annex.dmg
       if: ${{ runner.os == 'macOS' }}
 
   test-annex:
