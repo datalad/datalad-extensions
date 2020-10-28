@@ -23,6 +23,8 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+    outputs:
+      build-version: ${{ steps.build-version.outputs.version }}
     steps:
     - name: Set up system
       shell: bash
@@ -52,6 +54,12 @@ jobs:
         # public key for verification
         cat resources/datalad-builder-key.asc | gpg --import
 
+    - name: Capture build-version
+      id: build-version
+      run: |
+        stack ghc --no-haddock Build/BuildVersion.hs
+        echo "::set-output name=version::$(./Build/BuildVersion)"
+
     - name: Building it all
       run: |
         case "${{ runner.os }}" in
@@ -71,7 +79,7 @@ jobs:
     - name: Upload packages (Ubuntu)
       uses: actions/upload-artifact@v2-preview
       with:
-          name: git-annex-debianstandalone-packages
+          name: git-annex-debianstandalone-packages-${{ steps.build-version.outputs.version }}
           # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
           path: /tmp/annex-build/git-annex[-_]*.*
       if: ${{ runner.os == 'Linux' }}
@@ -79,7 +87,7 @@ jobs:
     - name: Upload packages (macOS)
       uses: actions/upload-artifact@v2-preview
       with:
-          name: git-annex-macos-dmg
+          name: git-annex-macos-dmg-${{ steps.build-version.outputs.version }}
           path: git-annex/tmp/git-annex.dmg
       if: ${{ runner.os == 'macOS' }}
 
@@ -108,13 +116,13 @@ jobs:
       - name: Download git-annex package (Ubuntu)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages
+          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'Linux' }}
 
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-macos-dmg
+          name: git-annex-macos-dmg-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'macOS' }}
 
       - name: Install git-annex package
