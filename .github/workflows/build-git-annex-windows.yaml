@@ -111,6 +111,7 @@ jobs:
       run: |
         mv git-annex-installer.exe \
            git-annex-installer-"${{ steps.build-version.outputs.version }}".exe
+      working-directory: git-annex
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
