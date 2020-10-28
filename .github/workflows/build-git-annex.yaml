@@ -58,13 +58,26 @@ jobs:
       run: |
         mkdir -p /tmp/annex-build
         cd /tmp/annex-build
-        git clone --depth 1 git://git.kitenet.net/git-annex
+        # We need to fetch all commits so that we get tags so that `git
+        # describe` will work.
+        git clone git://git.kitenet.net/git-annex
 
-    - name: Capture build-version
+    - name: Get build version
       id: build-version
       run: |
-        stack ghc --no-haddock Build/BuildVersion.hs
-        echo "::set-output name=version::$(./Build/BuildVersion)"
+        version="$(git describe | sed -e 's/-/+git/')"
+        case "${{ runner.os }}" in
+            Linux)
+                arch="$(dpkg --print-architecture)"
+                ;;
+            macOS)
+                arch="$(uname -p)"
+                ;;
+            *)
+                echo "Unknown OS ${{ runner.os }}"
+                exit 1
+        esac
+        echo "::set-output name=version::${version}_$arch"
       working-directory: /tmp/annex-build/git-annex
 
     - name: Building it all
@@ -78,6 +91,9 @@ jobs:
             macOS)
                 cd /tmp/annex-build/git-annex
                 "$GITHUB_WORKSPACE"/scripts/ci/build_git_annex_macos
+                cd /tmp/annex-build/git-annex/tmp
+                mv git-annex.dmg \
+                   git-annex-"${{ steps.build-version.outputs.version }}".dmg
                 ;;
             *)
                 echo "Unknown OS ${{ runner.os }}"
@@ -96,7 +112,7 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
           name: git-annex-macos-dmg-${{ steps.build-version.outputs.version }}
-          path: /tmp/annex-build/git-annex/tmp/git-annex.dmg
+          path: /tmp/annex-build/git-annex/tmp/git-annex-*.dmg
       if: ${{ runner.os == 'macOS' }}
 
   test-annex:
@@ -140,7 +156,7 @@ jobs:
                   sudo dpkg -i git-annex*.deb
                   ;;
               macOS)
-                  hdiutil attach git-annex.dmg
+                  hdiutil attach git-annex-*.dmg
                   rsync -a /Volumes/git-annex/git-annex.app /Applications/
                   hdiutil detach /Volumes/git-annex/
                   echo /Applications/git-annex.app/Contents/MacOS >> "$GITHUB_PATH"
@@ -215,13 +231,13 @@ jobs:
       - name: Download git-annex package (Ubuntu)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages
+          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'Linux' }}
 
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-macos-dmg
+          name: git-annex-macos-dmg-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'macOS' }}
 
       - name: Install git-annex package
@@ -231,7 +247,7 @@ jobs:
                   sudo dpkg -i git-annex*.deb
                   ;;
               macOS)
-                  hdiutil attach git-annex.dmg
+                  hdiutil attach git-annex-*.dmg
                   rsync -a /Volumes/git-annex/git-annex.app /Applications/
                   hdiutil detach /Volumes/git-annex/
                   echo /Applications/git-annex.app/Contents/MacOS >> "$GITHUB_PATH"
@@ -270,13 +286,13 @@ jobs:
       - name: Download git-annex package (Ubuntu)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages
+          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'Linux' }}
 
       - name: Download git-annex package (macOS)
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-macos-dmg
+          name: git-annex-macos-dmg-${{ needs.build-package.outputs.build-version }}
         if: ${{ runner.os == 'macOS' }}
 
       - name: Install git-annex package
@@ -286,7 +302,7 @@ jobs:
                   sudo dpkg -i git-annex*.deb
                   ;;
               macOS)
-                  hdiutil attach git-annex.dmg
+                  hdiutil attach git-annex-*.dmg
                   rsync -a /Volumes/git-annex/git-annex.app /Applications/
                   hdiutil detach /Volumes/git-annex/
                   echo /Applications/git-annex.app/Contents/MacOS >> "$GITHUB_PATH"
