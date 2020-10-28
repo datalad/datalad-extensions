@@ -108,8 +108,8 @@ jobs:
       working-directory: git-annex
 
     - name: Add version to installer name
-      run: >
-        mv git-annex-installer.exe
+      run: |
+        mv git-annex-installer.exe \
            git-annex-installer-"${{ steps.build-version.outputs.version }}".exe
 
     - name: Upload artifacts
