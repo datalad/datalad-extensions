@@ -57,6 +57,7 @@ jobs:
     - name: Checkout git-annex repository
       run: |
         mkdir -p /tmp/annex-build
+        cd /tmp/annex-build
         git clone --depth 1 git://git.kitenet.net/git-annex
 
     - name: Capture build-version
