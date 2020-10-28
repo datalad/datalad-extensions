@@ -34,7 +34,7 @@ jobs:
         git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
         cd git-annex
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
-        git checkout HEAD doc/license 'doc/*.mdwn' 'doc/logo*'
+        git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
 
     - name: Download and "install" libmagic for windows
       run: |
@@ -100,7 +100,9 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
           name: git-annex-windows-installer
-          path: git-annex\git-annex-installer.exe
+          path: |
+            git-annex\git-annex-installer.exe
+            git-annex\dist\build-version
 
   test-annex:
     runs-on: windows-2016
