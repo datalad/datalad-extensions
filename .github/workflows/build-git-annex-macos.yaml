@@ -143,6 +143,7 @@ jobs:
 
   test-datalad:
     # TODO: Re-enable macOS testing once it passes reliably
+    # <https://github.com/datalad/datalad-extensions/pull/33#issuecomment-696368877>
     if: false
     runs-on: macos-latest
     needs: build-package
