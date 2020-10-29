@@ -1,4 +1,4 @@
-name: Build git-annex snapshot
+name: Build git-annex snapshot on macOS
 
 on:
   # Trigger the workflow on pull request,
