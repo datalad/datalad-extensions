@@ -61,7 +61,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v2-preview
         with:
-            name: git-annex-debianstandalone-packages-${{ steps.build-version.outputs.version }}
+            name: git-annex-debianstandalone-packages_${{ steps.build-version.outputs.version }}
             # v2-preview supports globs (https://github.com/actions/upload-artifact/issues/62)
             path: /tmp/annex-build/git-annex[-_]*.*
 
@@ -78,7 +78,7 @@ jobs:
       - name: Download git-annex package
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
+          name: git-annex-debianstandalone-packages_${{ needs.build-package.outputs.build-version }}
 
       - name: Install git-annex package
         run: sudo dpkg -i git-annex*.deb
@@ -141,7 +141,7 @@ jobs:
       - name: Download git-annex package
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
+          name: git-annex-debianstandalone-packages_${{ needs.build-package.outputs.build-version }}
 
       - name: Install git-annex package
         run: sudo dpkg -i git-annex*.deb
@@ -169,7 +169,7 @@ jobs:
       - name: Download git-annex package
         uses: actions/download-artifact@v2-preview
         with:
-          name: git-annex-debianstandalone-packages-${{ needs.build-package.outputs.build-version }}
+          name: git-annex-debianstandalone-packages_${{ needs.build-package.outputs.build-version }}
 
       - name: Install git-annex package
         run: sudo dpkg -i git-annex*.deb

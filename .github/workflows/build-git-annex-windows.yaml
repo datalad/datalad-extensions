@@ -110,15 +110,15 @@ jobs:
     - name: Add version to installer name
       run: |
         mv git-annex-installer.exe \
-           git-annex-installer-"${{ steps.build-version.outputs.version }}".exe
+           git-annex-installer_"${{ steps.build-version.outputs.version }}".exe
       working-directory: git-annex
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-          name: git-annex-windows-installer-${{ steps.build-version.outputs.version }}
+          name: git-annex-windows-installer_${{ steps.build-version.outputs.version }}
           path: |
-            git-annex\git-annex-installer-*.exe
+            git-annex\git-annex-installer_*.exe
             git-annex\dist\build-version
 
   test-annex:
@@ -128,11 +128,11 @@ jobs:
     - name: Download git-annex installer
       uses: actions/download-artifact@v2
       with:
-        name: git-annex-windows-installer-${{ needs.build-package.outputs.build-version }}
+        name: git-annex-windows-installer_${{ needs.build-package.outputs.build-version }}
 
     - name: Install git-annex package
       shell: powershell
-      run: ./git-annex-installer-*.exe /S
+      run: ./git-annex-installer_*.exe /S
 
     - name: Check that magic files are installed
       run: |
