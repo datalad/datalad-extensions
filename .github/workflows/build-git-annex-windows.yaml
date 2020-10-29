@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/build-git-annex-windows.yaml'
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '30 03 * * *'
 
 defaults:
   run:
