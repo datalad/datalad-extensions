@@ -1,0 +1,38 @@
+diff --git a/Annex/ExternalAddonProcess.hs b/Annex/ExternalAddonProcess.hs
+index 94983160a..06ce4466e 100644
+--- a/Annex/ExternalAddonProcess.hs
++++ b/Annex/ExternalAddonProcess.hs
+@@ -11,6 +11,7 @@ import qualified Annex
+ import Annex.Common
+ import Git.Env
+ import Utility.Shell
++import Utility.ThreadScheduler
+ import Messages.Progress
+ 
+ import Control.Concurrent.Async
+@@ -55,14 +56,18 @@ startExternalAddonProcess basecmd pid = do
+ 	started cmd errrelayer pall@(Just hin, Just hout, Just herr, ph) = do
+ 		stderrelay <- async $ errrelayer herr
+ 		let shutdown forcestop = do
+-			cancel stderrelay
++			let trace m a = do
++				debugM "shutdown" ("shutdown external trace: " ++ m ++ " in 10s")
++				threadDelaySeconds (Seconds 10)
++				a
++			trace "stopping stderr relay" $ cancel stderrelay
+ 			if forcestop
+-				then cleanupProcess pall
+-				else flip onException (cleanupProcess pall) $ do
+-					hClose herr
+-					hClose hin
+-					hClose hout
+-					void $ waitForProcess ph
++				then trace "called with forcestop, cleanupProcess" $ cleanupProcess pall
++				else flip onException (trace "caught exception! cleanupProcess" $ cleanupProcess pall) $ do
++					trace "closing stderr" $ hClose herr
++					trace "closing stdin" $ hClose hin
++					trace "closing stdout" $ hClose hout
++					trace "waiting for process" $ void $ waitForProcess ph
+ 		return $ ExternalAddonProcess
+ 			{ externalSend = hin
+ 			, externalReceive = hout
