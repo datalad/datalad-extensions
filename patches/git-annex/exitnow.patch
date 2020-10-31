@@ -1,0 +1,36 @@
+diff --git a/Remote/External.hs b/Remote/External.hs
+index 729e16689..8f85a2429 100644
+--- a/Remote/External.hs
++++ b/Remote/External.hs
+@@ -525,7 +525,9 @@ receiveMessageAddonProcess p = do
+ 	return v
+ 
+ shutdownAddonProcess :: AddonProcess.ExternalAddonProcess -> Bool -> IO ()
+-shutdownAddonProcess = AddonProcess.externalShutdown 
++shutdownAddonProcess p immediate = do
++	sendMessageAddonProcess p EXITNOW
++	AddonProcess.externalShutdown p immediate
+ 
+ {- A response handler can yeild a result, or it can request that another
+  - message be consumed from the external. -}
+diff --git a/Remote/External/Types.hs b/Remote/External/Types.hs
+index 5fa97b221..97d537cd2 100644
+--- a/Remote/External/Types.hs
++++ b/Remote/External/Types.hs
+@@ -354,13 +354,16 @@ instance Proto.Sendable RemoteResponse where
+ -- Messages that can be sent at any time by either git-annex or the remote.
+ data ExceptionalMessage
+ 	= ERROR ErrorMsg
++	| EXITNOW -- not actually sent by external to git-annex, this is a hack
+ 	deriving (Show)
+ 
+ instance Proto.Sendable ExceptionalMessage where
+ 	formatMessage (ERROR err) = [ "ERROR", Proto.serialize err ]
++	formatMessage EXITNOW = [ "EXITNOW" ]
+ 
+ instance Proto.Receivable ExceptionalMessage where
+ 	parseCommand "ERROR" = Proto.parse1 ERROR
++	parseCommand "EXITNOW" = Proto.parse0 EXITNOW
+ 	parseCommand _ = Proto.parseFail
+ 
+ data AsyncMessage = AsyncMessage JobId WrappedMsg

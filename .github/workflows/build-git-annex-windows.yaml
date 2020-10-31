@@ -40,6 +40,11 @@ jobs:
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
 
+    - name: patch git-annex
+      run: |
+        for p in ../patches/git-annex/*; do patch -p1 < $p; done
+      working-directory: git-annex
+
     - name: Download and "install" libmagic for windows
       run: |
         TARGET_REPO=datalad/file-windows
@@ -104,7 +109,7 @@ jobs:
       id: build-version
       run: |
         version="$(git describe | sed -e 's/-/+git/')"
-        echo "::set-output name=version::${version}_x64"
+        echo "::set-output name=version::${version}-exitnow_x64"
       working-directory: git-annex
 
     - name: Add version to installer name
