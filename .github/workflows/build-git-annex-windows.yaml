@@ -6,7 +6,7 @@ on:
     paths:
       - '.github/workflows/build-git-annex-windows.yaml'
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '30 03 * * *'
 
 defaults:
   run:
@@ -18,6 +18,8 @@ env:
 jobs:
   build-package:
     runs-on: windows-2016
+    outputs:
+      build-version: ${{ steps.build-version.outputs.version }}
     steps:
     - name: Setup Haskell
       uses: actions/setup-haskell@v1.1.3
@@ -30,8 +32,10 @@ jobs:
 
     - name: Checkout git-annex repository
       run: |
+        # We need to fetch all commits so that we get tags so that `git
+        # describe` will work.
+        git clone --no-checkout git://git.kitenet.net/git-annex
         # We can't do a straight clone due to <https://git-annex.branchable.com/bugs/Error_cloning_repository_on_Windows/>
-        git clone --depth 1 --no-checkout git://git.kitenet.net/git-annex
         cd git-annex
         git ls-tree --name-only HEAD | grep -v '^doc$' | xargs git checkout HEAD
         git checkout HEAD doc/license ':(glob)doc/*.mdwn' ':(glob)doc/logo*'
@@ -96,12 +100,25 @@ jobs:
         TMP="$PWD" ./Build/NullSoftInstaller
       working-directory: git-annex
 
+    - name: Get build version
+      id: build-version
+      run: |
+        version="$(git describe | sed -e 's/-/+git/')"
+        echo "::set-output name=version::${version}_x64"
+      working-directory: git-annex
+
+    - name: Add version to installer name
+      run: |
+        mv git-annex-installer.exe \
+           git-annex-installer_"${{ steps.build-version.outputs.version }}".exe
+      working-directory: git-annex
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-          name: git-annex-windows-installer
+          name: git-annex-windows-installer_${{ steps.build-version.outputs.version }}
           path: |
-            git-annex\git-annex-installer.exe
+            git-annex\git-annex-installer_*.exe
             git-annex\dist\build-version
 
   test-annex:
@@ -111,11 +128,11 @@ jobs:
     - name: Download git-annex installer
       uses: actions/download-artifact@v2
       with:
-        name: git-annex-windows-installer
+        name: git-annex-windows-installer_${{ needs.build-package.outputs.build-version }}
 
     - name: Install git-annex package
       shell: powershell
-      run: ./git-annex-installer.exe /S
+      run: ./git-annex-installer_*.exe /S
 
     - name: Check that magic files are installed
       run: |
