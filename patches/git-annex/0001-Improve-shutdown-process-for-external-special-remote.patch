@@ -1,0 +1,65 @@
+From e6d10997d623a47141b5fcf4f10f6de7224ea463 Mon Sep 17 00:00:00 2001
+From: Joey Hess <joeyh@joeyh.name>
+Date: Mon, 2 Nov 2020 12:35:07 -0400
+Subject: [PATCH] Improve shutdown process for external special remotes and
+ external backends
+
+Make sure to relay any remaining stderr from the process, and potentially
+avoid the process getting a SIGPIPE if it writes to stderr too late.
+
+This may fix a problem encountered by datalad on windows, where it crashes
+during the external special remote shutdown.
+---
+ Annex/ExternalAddonProcess.hs | 18 ++++++++++++------
+ CHANGELOG                     |  4 ++++
+ 2 files changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/Annex/ExternalAddonProcess.hs b/Annex/ExternalAddonProcess.hs
+index 94983160a..988ee550e 100644
+--- a/Annex/ExternalAddonProcess.hs
++++ b/Annex/ExternalAddonProcess.hs
+@@ -55,14 +55,20 @@ startExternalAddonProcess basecmd pid = do
+ 	started cmd errrelayer pall@(Just hin, Just hout, Just herr, ph) = do
+ 		stderrelay <- async $ errrelayer herr
+ 		let shutdown forcestop = do
+-			cancel stderrelay
++			-- Close the process's stdin, to let it know there
++			-- are no more requests, so it will exit.
++			hClose hout
++			-- Close the procces's stdout as we're not going to
++			-- process any more output from it.
++			hClose hin
+ 			if forcestop
+ 				then cleanupProcess pall
+-				else flip onException (cleanupProcess pall) $ do
+-					hClose herr
+-					hClose hin
+-					hClose hout
+-					void $ waitForProcess ph
++				else void (waitForProcess ph)
++					`onException` cleanupProcess pall
++			-- This thread will exit after consuming any
++			-- remaining stderr from the process.
++			wait stderrelay
++			hClose herr
+ 		return $ ExternalAddonProcess
+ 			{ externalSend = hin
+ 			, externalReceive = hout
+diff --git a/CHANGELOG b/CHANGELOG
+index 3652ec89e..6a8a9bff3 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -23,6 +23,10 @@ git-annex (8.20201008) UNRELEASED; urgency=medium
+     on this.
+   * view: Avoid using ':' from metadata when generating a view, because
+     it's a special character on Windows ("c:")
++  * Improve shutdown process for external special remotes and external
++    backends. Make sure to relay any remaining stderr from the process,
++    and potentially avoid the process getting a SIGPIPE if it writes to
++    stderr too late.
+ 
+  -- Joey Hess <id@joeyh.name>  Thu, 08 Oct 2020 10:48:17 -0400
+ 
+-- 
+2.28.0.297.g1956fa8f8d
+
