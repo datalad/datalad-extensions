@@ -25,10 +25,10 @@ index 94983160a..988ee550e 100644
 -			cancel stderrelay
 +			-- Close the process's stdin, to let it know there
 +			-- are no more requests, so it will exit.
-+			hClose hout
++			hClose hin
 +			-- Close the procces's stdout as we're not going to
 +			-- process any more output from it.
-+			hClose hin
++			hClose hout
  			if forcestop
  				then cleanupProcess pall
 -				else flip onException (cleanupProcess pall) $ do
