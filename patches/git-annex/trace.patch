@@ -17,7 +17,7 @@ index 94983160a..06ce4466e 100644
 -			cancel stderrelay
 +			let trace m a = do
 +				debugM "shutdown" ("shutdown external trace: " ++ m ++ " in 10s")
-+				threadDelaySeconds (Seconds 10)
++				threadDelaySeconds (Seconds 2)
 +				a
 +			trace "stopping stderr relay" $ cancel stderrelay
  			if forcestop
@@ -29,8 +29,8 @@ index 94983160a..06ce4466e 100644
 -					void $ waitForProcess ph
 +				then trace "called with forcestop, cleanupProcess" $ cleanupProcess pall
 +				else flip onException (trace "caught exception! cleanupProcess" $ cleanupProcess pall) $ do
-+					trace "closing stderr" $ hClose herr
 +					trace "closing stdin" $ hClose hin
++					trace "closing stderr" $ hClose herr
 +					trace "closing stdout" $ hClose hout
 +					trace "waiting for process" $ void $ waitForProcess ph
  		return $ ExternalAddonProcess

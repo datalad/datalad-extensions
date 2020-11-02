@@ -109,7 +109,7 @@ jobs:
       id: build-version
       run: |
         version="$(git describe | sed -e 's/-/+git/')"
-        echo "::set-output name=version::${version}-traceexit_x64"
+        echo "::set-output name=version::${version}-traceexit+reorder_x64"
       working-directory: git-annex
 
     - name: Add version to installer name
