@@ -171,11 +171,11 @@ jobs:
       - name: Download git-annex installer
         uses: actions/download-artifact@v2
         with:
-          name: git-annex-windows-installer
+          name: git-annex-windows-installer_${{ needs.build-package.outputs.build-version }}
 
       - name: Install git-annex package
         shell: powershell
-        run: ./git-annex-installer.exe /S
+        run: ./git-annex-installer_*.exe /S
 
       - name: Define test host alias
         shell: cmd
