@@ -12,8 +12,9 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
     ![Updated](https://anaconda.org/conda-forge/git-annex/badges/latest_release_relative_date.svg)
     ![Platforms?](https://anaconda.org/conda-forge/git-annex/badges/platforms.svg)
  - Current snapshot build/tests + DataLad tests:
-    [![Build git-annex snapshot](https://github.com/datalad/datalad-extensions/workflows/Build%20git-annex%20snapshot/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3A%22Build+git-annex+snapshot%22)
-    [![Build git-annex snapshot on Windows](https://github.com/datalad/datalad-extensions/workflows/Build%20git-annex%20snapshot%20on%20Windows/badge.svg)](https://github.com/datalad/datalad-extensions/actions?query=workflow%3A%22Build+git-annex+snapshot+on+Windows%22)
+    [![Build git-annex snapshot on Ubuntu](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20Ubuntu/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+Ubuntu%22)
+    [![Build git-annex snapshot on macOS](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20macOS/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+macOS%22)
+    [![Build git-annex snapshot on Windows](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20Windows/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+Windows%22)
 
 ## DataLad Status
 
