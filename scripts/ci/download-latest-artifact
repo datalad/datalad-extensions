@@ -3,9 +3,9 @@
 # Apache 2.0 license 
 set -eu
 
-: "${TARGET_REPO:=datalad/datalad-extensions}"
+: "${TARGET_REPO:=datalad/git-annex}"
 : "${TARGET_BRANCH:=master}"
-: "${TARGET_WORKFLOW:=build-git-annex-debianstandalone.yaml}"
+: "${TARGET_WORKFLOW:=build-ubuntu.yaml}"
 : "${TARGET_PATH:=download}"  # Directory which will be created if doesn't exist
 : "${GITHUB_TOKEN}" # needs to be defined
 
