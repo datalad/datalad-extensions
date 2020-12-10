@@ -22,7 +22,7 @@ jobs:
       matrix:
         # name mimics the one in .travis.yml for datalad build introduced in
         # https://github.com/datalad/datalad/pull/4640
-        annex-install-scenario: [neurodebian, datalad-extensions-latest]
+        annex-install-scenario: [neurodebian, datalad-git-annex-latest]
       fail-fast: false
 
     steps:
@@ -37,7 +37,7 @@ jobs:
           neurodebian)
             sudo eatmydata apt-get install git-annex-standalone
             ;;
-          datalad-extensions-latest)
+          datalad-git-annex-latest)
             sudo eatmydata apt-get install jq
             GITHUB_TOKEN=${{ secrets.datalad_github_token }} ./scripts/ci/download-latest-artifact
             sudo eatmydata dpkg -i download/*.deb

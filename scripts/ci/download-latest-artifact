@@ -27,7 +27,7 @@ function call_curl {
   ${CURL} -H "Authorization: Bearer ${GITHUB_TOKEN}" "$@"
 }
 
-JOBS_URL="https://api.github.com/repos/${TARGET_REPO}/actions/workflows/${TARGET_WORKFLOW}/runs?branch=${TARGET_BRANCH}"
+JOBS_URL="https://api.github.com/repos/${TARGET_REPO}/actions/workflows/${TARGET_WORKFLOW}/runs?status=success&branch=${TARGET_BRANCH}"
 
 echo "Getting artifacts_url from ${JOBS_URL} into ${JOBS_DOWNLOAD}"
 call_curl "${JOBS_URL}" >| "${JOBS_DOWNLOAD}"
