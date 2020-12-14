@@ -136,7 +136,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
  [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
  ![Conda?](https://anaconda.org/conda-forge/datalad/badges/version.svg)
  - CI:
-   [![Travis tests status](https://secure.travis-ci.org/datalad/datalad.png?branch=master)](https://travis-ci.org/datalad/datalad)
+   [![Travis tests status](https://travis-ci.com/datalad/datalad.png?branch=master)](https://travis-ci.com/datalad/datalad)
    [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
    [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
  - Misc:
@@ -172,7 +172,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
                 'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
                 'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})',
-                'ci_master+dlrelease': f'[![master+Released Datalad](https://secure.travis-ci.org/{e.githubdash}.png?branch=master)](https://travis-ci.org/{e.githubdash})',
+                'ci_master+dlrelease': f'[![master+Released Datalad](https://travis-ci.com/{e.githubdash}.png?branch=master)](https://travis-ci.com/{e.githubdash})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
                 'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
                 'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Percentage of issues still open")',
