@@ -8,7 +8,7 @@ on:
   # but only if any given extension workflow was modified
   pull_request:
     paths:
-      - '.github/workflows/test-datalad_container.yaml'
+      - '.github/workflows/test-datalad_container-master.yaml'
   # all should be triggered on cron
   schedule:
     - cron: '30 01 * * *'
