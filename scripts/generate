@@ -85,30 +85,35 @@ def process_extension(ext_spec):
     # TODO: proper recursive
     templates_dir = op.join(top_path, 'templates')
     for tmpl_p in glob.glob(op.join(templates_dir, '.github/*/*')):
-        p = jinja_render(tmpl_p, **render_kwargs)
-        if p == tmpl_p:
-            log("Skipping %s since seems to be not extension specific", tmpl_p)
-            continue
+        datalad_branches = ['master']
+        if 'datalad_branch' in tmpl_p:
+            datalad_branches += ['maint']
+        for datalad_branch in datalad_branches:
+            render_kwargs['datalad_branch'] = datalad_branch
+            p = jinja_render(tmpl_p, **render_kwargs)
+            if p == tmpl_p:
+                log("Skipping %s since seems to be not extension specific", tmpl_p)
+                continue
 
-        with open(tmpl_p) as f:
-            tmpl = f.read()
-        rendered = jinja_render(tmpl, **render_kwargs)
+            with open(tmpl_p) as f:
+                tmpl = f.read()
+            rendered = jinja_render(tmpl, **render_kwargs)
 
-        if rendered == tmpl:
-            raise RuntimeError(
-                f"Rendered version of {tmpl_p} content is the same as template. "
-                "At the moment it is not expected"
-            )
+            if rendered == tmpl:
+                raise RuntimeError(
+                    f"Rendered version of {tmpl_p} content is the same as template. "
+                    "At the moment it is not expected"
+                )
 
-        prel_target = op.relpath(p, templates_dir)
-        p_target = op.join(top_path, prel_target)
-        if not op.exists(op.dirname(p_target)):
-            os.makedirs(op.dirname(p_target))
+            prel_target = op.relpath(p, templates_dir)
+            p_target = op.join(top_path, prel_target)
+            if not op.exists(op.dirname(p_target)):
+                os.makedirs(op.dirname(p_target))
 
-        with open(p_target, "w") as f:
-            f.write(rendered)
+            with open(p_target, "w") as f:
+                f.write(rendered)
 
-        log("Rendered %s", prel_target)
+            log("Rendered %s", prel_target)
 
 
 def generate_README(ext_specs):
@@ -151,6 +156,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
              'PyPI Release': 'release_pypi',
              'Conda Release': 'release_conda',
              'CI: Released + DL master': 'ci_rel+dlmaster',
+             'CI: Released + DL maint': 'ci_rel+dlmaint',
              'CI: master + DL Release': 'ci_master+dlrelease',
              'Codecov': 'codecov',
              'Issue Resolution': 'issues_restime',
@@ -171,7 +177,12 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
                 'release_github':      f'[![?](https://img.shields.io/github/release/{e.githubdash}.svg)](https://GitHub.com/{e.githubdash}/releases/)',
                 'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
-                'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext})',
+                'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-'
+                                       f'{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-'
+                                       f'{ext}-master)',
+                'ci_rel+dlmaint':      f'[![Released+DataLad maint]({https_extension}/workflows/test-'
+                                       f'{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-'
+                                       f'{ext}-maint)',
                 'ci_master+dlrelease': f'[![master+Released Datalad](https://travis-ci.com/{e.githubdash}.png?branch=master)](https://travis-ci.com/{e.githubdash})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
                 'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
