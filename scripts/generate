@@ -177,12 +177,8 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
                 'release_github':      f'[![?](https://img.shields.io/github/release/{e.githubdash}.svg)](https://GitHub.com/{e.githubdash}/releases/)',
                 'release_pypi':        f'[![PyPI version fury.io](https://badge.fury.io/py/{e.pypi}.svg)](https://pypi.python.org/pypi/{e.pypi}/)',
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
-                'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-'
-                                       f'{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-'
-                                       f'{ext}-master)',
-                'ci_rel+dlmaint':      f'[![Released+DataLad maint]({https_extension}/workflows/test-'
-                                       f'{ext}/badge.svg)]({https_extension}/actions?query=workflow%3Atest-'
-                                       f'{ext}-maint)',
+                'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}-master/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-master)',
+                'ci_rel+dlmaint':      f'[![Released+DataLad maint]({https_extension}/workflows/test-{ext}-maint/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-maint)',
                 'ci_master+dlrelease': f'[![master+Released Datalad](https://travis-ci.com/{e.githubdash}.png?branch=master)](https://travis-ci.com/{e.githubdash})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
                 'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
