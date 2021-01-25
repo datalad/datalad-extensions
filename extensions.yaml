@@ -8,6 +8,7 @@
 #  apt_depends:  # dependencies to install via APT necessary for testing
 #  - package1
 #  - ...
+#  cron_time: <cron expression for scheduled runs>
 #
 # If no customizations necessary, just place "None" as the value
 #
@@ -22,18 +23,25 @@
 extensions:
  datalad_neuroimaging:
   apt_depends: [dcm2niix]
+  cron_time: '00 01 * * *'
  datalad_container:
   apt_depends: [singularity-container]
+  cron_time: '20 01 * * *'
  datalad_metalad:
   pypi: datalad-metalad
+  cron_time: '40 01 * * *'
  datalad_crawler:
+  cron_time: '00 02 * * *'
  datalad_webapp:
   pypi: datalad-webapp
   package: datalad_webapp
   tester: pytest
+  cron_time: '20 02 * * *'
  datalad_hirni:
   apt_depends: [dcm2niix, singularity-container]
   pypi: datalad-hirni
   package: datalad_hirni
   github: psychoinformatics-de/datalad-hirni
+  cron_time: '40 02 * * *'
  datalad_ukbiobank:
+  cron_time: '00 03 * * *'

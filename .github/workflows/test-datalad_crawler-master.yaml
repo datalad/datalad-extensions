@@ -11,7 +11,7 @@ on:
       - '.github/workflows/test-datalad_crawler-master.yaml'
   # all should be triggered on cron
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '00 02 * * *'
 
 jobs:
   test:

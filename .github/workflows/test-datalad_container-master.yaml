@@ -11,7 +11,7 @@ on:
       - '.github/workflows/test-datalad_container-master.yaml'
   # all should be triggered on cron
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '20 01 * * *'
 
 jobs:
   test:
