@@ -11,7 +11,7 @@ on:
       - '.github/workflows/test-{{ extension.name }}-{{ datalad_branch }}.yaml'
   # all should be triggered on cron
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '{{ extension.cron_time }}'
 
 jobs:
   test:
