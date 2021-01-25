@@ -11,7 +11,7 @@ on:
       - '.github/workflows/test-datalad_hirni-master.yaml'
   # all should be triggered on cron
   schedule:
-    - cron: '30 01 * * *'
+    - cron: '40 02 * * *'
 
 jobs:
   test:
