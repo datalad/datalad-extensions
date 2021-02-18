@@ -58,6 +58,28 @@ class ExtensionSpec(dict):
     def tester(self):
         return self.get('tester', 'nose')
 
+    @property
+    def ci_badge(self):
+        ci = self.get('ci', 'Travis').lower()
+        if ci  == 'travis':
+            return "https://travis-ci.com/{}.png?branch=master" \
+                   "".format(self.githubdash)
+        elif ci == 'appveyor':
+            return "https://ci.appveyor.com/api/projects/status/github/{}?" \
+                   "branch=master&svg=true".format(self.github)
+        else:
+            raise RuntimeError("Unknown Ci specification: %s" % ci)
+
+    @property
+    def ci_link(self):
+        ci = self.get('ci', 'Travis').lower()
+        if ci == 'travis':
+            return "https://travis-ci.com/{}".format(self.githubdash)
+        elif ci == 'appveyor':
+            user = self.get('ci-user')
+            return "https://ci.appveyor.com/project/{user}/{githubname}/" \
+                   "branch/master".format(user=user, githubname=self.githubname)
+
     #def __getattribute__(self, item):
     #    return self[item]
 
@@ -179,7 +201,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
                 'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}-master/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-master)',
                 'ci_rel+dlmaint':      f'[![Released+DataLad maint]({https_extension}/workflows/test-{ext}-maint/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-maint)',
-                'ci_master+dlrelease': f'[![master+Released Datalad](https://travis-ci.com/{e.githubdash}.png?branch=master)](https://travis-ci.com/{e.githubdash})',
+                'ci_master+dlrelease': f'[![master+Released Datalad]({e.ci_badge})]({e.ci_link})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
                 'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
                 'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Percentage of issues still open")',

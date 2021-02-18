@@ -31,6 +31,11 @@ of extension package names with following optional fields:
   assumed to be under `datalad/` organization on Github.
 - `tester` - what test framework to use. Currently either 'nose' or 'pytest'; 
   defaults to 'nose'. Used to generate `.travis.yml`
+- `ci` - name of the CI system to link to for showing an extension's master vs
+  Datalad released CI build. Currently recognizes 'Travis' and 'AppVeyor'
+  (case-insensitive)
+- `ci-user` - name of the user under which CI is running. Currently only needed
+  for AppVeyor since the link to CI builds depends on it
 
 ## HOWTO re-generate files
 
