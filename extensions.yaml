@@ -24,6 +24,8 @@ extensions:
  datalad_neuroimaging:
   apt_depends: [dcm2niix]
   cron_time: '00 01 * * *'
+  ci: AppVeyor
+  ci-user: mih
  datalad_container:
   apt_depends: [singularity-container]
   cron_time: '20 01 * * *'
@@ -43,5 +45,9 @@ extensions:
   package: datalad_hirni
   github: psychoinformatics-de/datalad-hirni
   cron_time: '40 02 * * *'
+  ci: AppVeyor
+  ci-user: mih
  datalad_ukbiobank:
   cron_time: '00 03 * * *'
+  ci: AppVeyor
+  ci-user: mih
