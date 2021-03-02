@@ -34,6 +34,10 @@ extensions:
   cron_time: '40 01 * * *'
  datalad_crawler:
   cron_time: '00 02 * * *'
+ datalad_osf:
+  cron_time: '00 02 * * *'
+  ci: AppVeyor
+  ci-user: mih
  datalad_webapp:
   pypi: datalad-webapp
   package: datalad_webapp
