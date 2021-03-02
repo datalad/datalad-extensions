@@ -55,3 +55,8 @@ extensions:
   cron_time: '00 03 * * *'
   ci: AppVeyor
   ci-user: mih
+ datalad_mihextras:
+  github: mih/datalad-mihextras
+  cron_time: '40 02 * * *'
+  ci: AppVeyor
+  ci-user: mih
