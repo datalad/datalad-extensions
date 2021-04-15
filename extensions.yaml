@@ -60,3 +60,7 @@ extensions:
   cron_time: '40 02 * * *'
   ci: AppVeyor
   ci-user: mih
+ datalad_deprecated:
+  cron_time: '00 04 * * *'
+  ci: AppVeyor
+  ci-user: mih
