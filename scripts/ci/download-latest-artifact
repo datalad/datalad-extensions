@@ -9,7 +9,7 @@ set -eu
 : "${TARGET_PATH:=download}"  # Directory which will be created if doesn't exist
 : "${GITHUB_TOKEN}" # needs to be defined
 
-: "${CURL:=curl --silent}"
+: "${CURL:=curl}"
 
 : "${JOBS_DOWNLOAD:=$(mktemp -u)}"
 
