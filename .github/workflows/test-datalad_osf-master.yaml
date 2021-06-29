@@ -32,20 +32,20 @@ jobs:
       run: |
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
-        sudo apt-get install eatmydata
+        sudo apt-get install eatmydata python3-pip
+        sudo pip install datalad-installer
+        # just not to change the name from what we had already
         case "${{ matrix.annex-install-scenario }}" in
           neurodebian)
-            sudo eatmydata apt-get install git-annex-standalone
-            ;;
+            method=neurodebian;;
           datalad-git-annex-latest)
-            sudo eatmydata apt-get install jq
-            GITHUB_TOKEN=${{ secrets.datalad_github_token }} ./scripts/ci/download-latest-artifact
-            sudo eatmydata dpkg -i download/*.deb
-            ;;
+            method=datalad/git-annex;;
           *)
             echo "Unknown scenario ${{ matrix.annex-install-scenario }}" >&2
             exit 1
         esac
+        GITHUB_TOKEN=${{ secrets.datalad_github_token }} eatmydata \
+         datalad-installer --sudo ok git-annex -m "${method}"
     - name: Set up environment
       run: |
         git config --global user.email "test@github.land"
