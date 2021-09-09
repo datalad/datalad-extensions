@@ -1,0 +1,27 @@
+name: Commit to keep workflows active
+
+on:
+  schedule:
+    - cron: '00 12 * * *'
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "heartbeat@github.nil"
+          git config --global user.name "Repository Heartbeat"
+
+      - name: Make & push an empty commit
+        run: |
+          last_commit="$(git show -s --format=%at)"
+          cutoff="$(date --date='50 days ago' +%s)"
+          if [ "$last_commit" -lt "$cutoff" ]
+          then git commit --allow-empty -m '[EMPTY] Commit to keep workflows active'
+               git push
+          else echo 'Latest activity was within past 50 days; not committing'
+          fi
