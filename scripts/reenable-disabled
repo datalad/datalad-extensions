@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -eu
+
+export PS4=+
+set -x
+
+curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/datalad/datalad-extensions/actions/workflows \
+| jq '.workflows[] | select(.state == "disabled_inactivity").id' \
+| while read id; do
+    echo "I: enabling $id"
+    curl -X PUT \
+    -H "Authorization: token $GITHUB_TOKEN" \
+    -H "Accept: application/vnd.github.v3+json" \
+    https://api.github.com/repos/datalad/datalad-extensions/actions/workflows/$id/enable 
+done
