@@ -2,7 +2,7 @@ name: Commit to keep workflows active
 
 on:
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: '00 12 * * *'
 
 jobs:
   heartbeat:
@@ -18,5 +18,10 @@ jobs:
 
       - name: Make & push an empty commit
         run: |
-          git commit --allow-empty -m '[EMPTY] Commit to keep workflows active'
-          git push
+          last_commit="$(git show -s --format=%at)"
+          cutoff="$(date --date='50 days ago' +%s)"
+          if [ "$last_commit" -lt "$cutoff" ]
+          then git commit --allow-empty -m '[EMPTY] Commit to keep workflows active'
+               git push
+          else echo 'Latest activity was within past 50 days; not committing'
+          fi
