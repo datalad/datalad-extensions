@@ -1,0 +1,22 @@
+name: Commit to keep workflows active
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "heartbeat@github.nil"
+          git config --global user.name "Repository Heartbeat"
+
+      - name: Make & push an empty commit
+        run: |
+          git commit --allow-empty -m '[EMPTY] Commit to keep workflows active'
+          git push
