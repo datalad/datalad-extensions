@@ -40,7 +40,7 @@ class ExtensionSpec(dict):
 
     @property
     def pypi(self):
-        return self.get("pypi", self.name)
+        return self.get("pypi", self.name.replace('_', '-'))
 
     @property
     def package(self):
