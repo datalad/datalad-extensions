@@ -60,7 +60,7 @@ jobs:
         pip install https://github.com/datalad/datalad/archive/master.zip
     - name: Install datalad_crawler extension from PyPI ([devel])
       run: |
-        pip install datalad_crawler[devel]
+        pip install datalad-crawler[devel]
     - name: Install nose et al (just in case!)
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.

@@ -60,7 +60,7 @@ jobs:
         pip install https://github.com/datalad/datalad/archive/maint.zip
     - name: Install datalad_osf extension from PyPI ([devel])
       run: |
-        pip install datalad_osf[devel]
+        pip install datalad-osf[devel]
     - name: Install nose et al (just in case!)
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.

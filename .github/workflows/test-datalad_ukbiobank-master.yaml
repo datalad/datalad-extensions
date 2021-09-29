@@ -60,7 +60,7 @@ jobs:
         pip install https://github.com/datalad/datalad/archive/master.zip
     - name: Install datalad_ukbiobank extension from PyPI ([devel])
       run: |
-        pip install datalad_ukbiobank[devel]
+        pip install datalad-ukbiobank[devel]
     - name: Install nose et al (just in case!)
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.
