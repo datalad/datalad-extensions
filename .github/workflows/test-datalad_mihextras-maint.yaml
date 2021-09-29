@@ -60,7 +60,7 @@ jobs:
         pip install https://github.com/datalad/datalad/archive/maint.zip
     - name: Install datalad_mihextras extension from PyPI ([devel])
       run: |
-        pip install datalad_mihextras[devel]
+        pip install datalad-mihextras[devel]
     - name: Install nose et al (just in case!)
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.
