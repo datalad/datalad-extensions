@@ -62,7 +62,7 @@ class ExtensionSpec(dict):
     def ci_badge(self):
         ci = self.get('ci', 'Travis').lower()
         if ci  == 'travis':
-            return "https://travis-ci.com/{}.png?branch=master" \
+            return "https://travis-ci.com/{}.svg?branch=master" \
                    "".format(self.githubdash)
         elif ci == 'appveyor':
             return "https://ci.appveyor.com/api/projects/status/github/{}?" \
