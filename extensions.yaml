@@ -64,3 +64,7 @@ extensions:
   cron_time: '00 04 * * *'
   ci: AppVeyor
   ci-user: mih
+ datalad_xnat:
+  cron_time: '00 02 * * *'
+  ci: AppVeyor
+  ci-user: mih
