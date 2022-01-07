@@ -29,9 +29,11 @@ extensions:
  datalad_container:
   apt_depends: [singularity-container]
   cron_time: '20 01 * * *'
- datalad_metalad:
-  pypi: datalad-metalad
-  cron_time: '40 01 * * *'
+ # Fails chronically, needs a release, some related issues:
+ # https://github.com/datalad/datalad-metalad/issues/66
+ #datalad_metalad:
+ # pypi: datalad-metalad
+ # cron_time: '40 01 * * *'
  datalad_crawler:
   cron_time: '00 02 * * *'
  datalad_osf:
