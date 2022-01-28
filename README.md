@@ -20,7 +20,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
  [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
  ![Conda?](https://anaconda.org/conda-forge/datalad/badges/version.svg)
  - CI:
-   [![Travis tests status](https://travis-ci.com/datalad/datalad.png?branch=master)](https://travis-ci.com/datalad/datalad)
+   [![Travis tests status](https://app.travis-ci.com/datalad/datalad.png?branch=master)](https://app.travis-ci.com/datalad/datalad)
    [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
    [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
  - Misc:
