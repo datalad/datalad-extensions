@@ -38,11 +38,12 @@ extensions:
   cron_time: '00 02 * * *'
   ci: AppVeyor
   ci-user: mih
- datalad_webapp:
-  pypi: datalad-webapp
-  package: datalad_webapp
-  tester: pytest
-  cron_time: '20 02 * * *'
+ # disabled since not actively developed etc
+ #datalad_webapp:
+ # pypi: datalad-webapp
+ # package: datalad_webapp
+ # tester: pytest
+ # cron_time: '20 02 * * *'
  datalad_ukbiobank:
   cron_time: '00 03 * * *'
   ci: AppVeyor
