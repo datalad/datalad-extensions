@@ -74,4 +74,4 @@ jobs:
         mkdir -p __testhome__
         cd __testhome__
 
-        python -m nose -s -v --with-cov --cover-package datalad datalad_next
+        python -m nose -s -v datalad_next.patches.tests.test_push_to_export_remote:test_patch_skip_ignore_targets_export
