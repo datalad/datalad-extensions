@@ -19,10 +19,14 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
  [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
  ![Conda?](https://anaconda.org/conda-forge/datalad/badges/version.svg)
- - CI:
-   [![Travis tests status](https://travis-ci.com/datalad/datalad.png?branch=master)](https://travis-ci.com/datalad/datalad)
-   [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
-   [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
+ - **CIs**:
+   Travis: 
+   `master`[![Travis tests status: master](https://app.travis-ci.com/datalad/datalad.svg?branch=master)](https://app.travis-ci.com/github/datalad/datalad/branches), 
+   `maint` [![Travis tests status: master](https://app.travis-ci.com/datalad/datalad.svg?branch=maint)](https://app.travis-ci.com/github/datalad/datalad/branches);
+   Appveyor:
+   `master` [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
+   `maint` [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=maint&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/maint);
+   Docs: [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
  - Misc:
    [![codecov.io](https://codecov.io/github/datalad/datalad/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad?branch=master)
 
