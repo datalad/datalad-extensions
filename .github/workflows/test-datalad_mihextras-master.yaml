@@ -65,7 +65,7 @@ jobs:
       # Note, that we need nose even in case of pytest, due to test helpers
       # depending on it.
       run: |
-        pip install nose vcrpy mock
+        pip install pytest nose vcrpy mock coverage
     - name: WTF!?
       run: |
         datalad wtf
