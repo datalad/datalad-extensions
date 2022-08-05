@@ -31,8 +31,10 @@ extensions:
   cron_time: '20 01 * * *'
  datalad_metalad:
   pypi: datalad-metalad
+  tester: pytest
   cron_time: '40 01 * * *'
  datalad_crawler:
+  tester: pytest
   cron_time: '00 02 * * *'
  datalad_osf:
   cron_time: '00 02 * * *'
