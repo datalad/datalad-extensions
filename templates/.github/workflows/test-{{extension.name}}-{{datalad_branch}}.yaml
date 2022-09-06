@@ -9,6 +9,11 @@ on:
   pull_request:
     paths:
       - '.github/workflows/test-{{ extension.name }}-{{ datalad_branch }}.yaml'
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/test-{{ extension.name }}-{{ datalad_branch }}.yaml'
   # all should be triggered on cron
   schedule:
     - cron: '{{ extension.cron_time }}'
