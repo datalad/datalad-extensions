@@ -33,6 +33,7 @@ extensions:
  datalad_container:
   apt_depends: [singularity-container]
   cron_time: '20 01 * * *'
+  tester: pytest
  datalad_fuse:
   cron_time: '30 01 * * *'
   tester: pytest
@@ -58,6 +59,7 @@ extensions:
   cron_time: '00 03 * * *'
   ci: AppVeyor
   ci-user: mih
+  tester: pytest
  datalad_mihextras:
   github: mih/datalad-mihextras
   cron_time: '40 02 * * *'
@@ -67,6 +69,7 @@ extensions:
   cron_time: '00 05 * * *'
   ci: AppVeyor
   ci-user: mih
+  tester: pytest
  datalad_deprecated:
   cron_time: '00 04 * * *'
   ci: AppVeyor
