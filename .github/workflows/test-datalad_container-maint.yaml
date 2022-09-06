@@ -9,6 +9,11 @@ on:
   pull_request:
     paths:
       - '.github/workflows/test-datalad_container-maint.yaml'
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/test-datalad_container-maint.yaml'
   # all should be triggered on cron
   schedule:
     - cron: '20 01 * * *'
