@@ -26,10 +26,9 @@ extensions:
   cron_time: '00 01 * * *'
   ci: AppVeyor
   ci-user: mih
- # TODO: Waiting on PyPI release.
- #datalad_catalog:
- # cron_time: '50 01 * * *'
- # tester: pytest
+ datalad_catalog:
+  cron_time: '50 01 * * *'
+  tester: pytest
  datalad_container:
   apt_depends: [singularity-container]
   cron_time: '20 01 * * *'
