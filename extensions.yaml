@@ -77,3 +77,8 @@ extensions:
   cron_time: '00 02 * * *'
   ci: AppVeyor
   ci-user: mih
+ datalad_gooey:
+  cron_time: '00 06 * * *'
+  ci: AppVeyor
+  ci-user: mih
+  tester: pytest
