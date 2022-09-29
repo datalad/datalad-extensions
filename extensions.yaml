@@ -78,6 +78,7 @@ extensions:
   ci: AppVeyor
   ci-user: mih
  datalad_gooey:
+  apt_depends: [xvfb]
   cron_time: '00 06 * * *'
   ci: AppVeyor
   ci-user: mih
