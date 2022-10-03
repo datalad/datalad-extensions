@@ -55,6 +55,15 @@ class ExtensionSpec(dict):
         return self.get("apt_depends", [])
 
     @property
+    def extra_setup_steps(self):
+        extras = self.get('extra_setup_steps', [])
+        if extras:
+            out = [f'{" " * 0 if idx == 0 else " " * 4}- {k}: {v}'
+                   if k == 'name' else f'{" "*6}{k}: {v}'
+                   for idx, extra in enumerate(extras) for k, v in extra.items()]
+            return out
+
+    @property
     def tester(self):
         return self.get('tester', 'nose')
 

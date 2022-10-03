@@ -75,6 +75,9 @@ jobs:
     - name: Install APT depends for the extension
       run: sudo eatmydata apt-get install {{ extension.apt_depends | join(' ')}}
 {% endif %}
+{%- if extension.extra_setup_steps %}
+    {{ extension.extra_setup_steps | join('\n')}}
+{% endif %}
     - name: WTF!?
       run: |
         datalad wtf
