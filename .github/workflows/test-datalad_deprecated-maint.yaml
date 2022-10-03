@@ -79,4 +79,4 @@ jobs:
         mkdir -p __testhome__
         cd __testhome__
 
-        python -m nose -s -v --with-cov --cover-package datalad datalad_deprecated
+        python -m pytest -s -v  --cov=datalad --cov=datalad_deprecated --pyargs datalad_deprecated

@@ -65,7 +65,7 @@ class ExtensionSpec(dict):
 
     @property
     def tester(self):
-        return self.get('tester', 'nose')
+        return self.get('tester', 'pytest')
 
     @property
     def ci_badge(self):
