@@ -31,7 +31,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up system
       shell: bash
       run: |
@@ -56,7 +56,7 @@ jobs:
         git config --global user.email "test@github.land"
         git config --global user.name "GitHub Almighty"
     - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.7
     - name: Install DataLad ({{ datalad_branch }})
