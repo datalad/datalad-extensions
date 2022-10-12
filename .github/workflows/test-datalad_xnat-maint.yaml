@@ -79,4 +79,4 @@ jobs:
         mkdir -p __testhome__
         cd __testhome__
 
-        python -m pytest -s -v  --cov=datalad --cov=datalad_xnat --pyargs datalad_xnat
+        python -m nose -s -v --with-cov --cover-package datalad datalad_xnat
