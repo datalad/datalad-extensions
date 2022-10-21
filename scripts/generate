@@ -10,6 +10,8 @@ import jinja2
 
 top_path = op.dirname(op.dirname(__file__))
 
+DEFAULT_BRANCH = 'master'
+
 # TODO: proper logigng etc
 
 def log(msg, *args):
@@ -21,6 +23,10 @@ class ExtensionSpec(dict):
     @property
     def name(self):
         return self["name"]
+
+    @property
+    def branch(self):
+        return self.get("branch", DEFAULT_BRANCH)
 
     # Some properties which might tune the value
     @property
@@ -71,11 +77,10 @@ class ExtensionSpec(dict):
     def ci_badge(self):
         ci = self.get('ci', 'Travis').lower()
         if ci  == 'travis':
-            return "https://travis-ci.com/{}.svg?branch=master" \
-                   "".format(self.githubdash)
+            return f"https://travis-ci.com/{self.githubdash}.svg?branch={self.branch}"
         elif ci == 'appveyor':
-            return "https://ci.appveyor.com/api/projects/status/github/{}?" \
-                   "branch=master&svg=true".format(self.github)
+            return f"https://ci.appveyor.com/api/projects/status/github/{self.github}?" \
+                   f"branch={self.branch}&svg=true"
         else:
             raise RuntimeError("Unknown Ci specification: %s" % ci)
 
@@ -83,11 +88,11 @@ class ExtensionSpec(dict):
     def ci_link(self):
         ci = self.get('ci', 'Travis').lower()
         if ci == 'travis':
-            return "https://travis-ci.com/github/{}".format(self.githubdash)
+            return "https://travis-ci.com/github/{self.githubdash}"
         elif ci == 'appveyor':
             user = self.get('ci-user')
-            return "https://ci.appveyor.com/project/{user}/{githubname}/" \
-                   "branch/master".format(user=user, githubname=self.githubname)
+            return f"https://ci.appveyor.com/project/{user}/{self.githubname}/" \
+                   f"branch/{self.branch}"
 
     #def __getattribute__(self, item):
     #    return self[item]
@@ -188,7 +193,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
              'Conda Release': 'release_conda',
              'CI: Released + DL master': 'ci_rel+dlmaster',
              'CI: Released + DL maint': 'ci_rel+dlmaint',
-             'CI: master + DL Release': 'ci_master+dlrelease',
+             'CI: develop + DL Release': 'ci_develop+dlrelease',
              'Codecov': 'codecov',
              'Issue Resolution': 'issues_restime',
              'Open Issues': 'issues_open'
@@ -210,7 +215,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
                 'release_conda':       f'![-](https://anaconda.org/conda-forge/{e.conda}/badges/version.svg)',
                 'ci_rel+dlmaster':     f'[![Released+DataLad master]({https_extension}/workflows/test-{ext}-master/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-master)',
                 'ci_rel+dlmaint':      f'[![Released+DataLad maint]({https_extension}/workflows/test-{ext}-maint/badge.svg)]({https_extension}/actions?query=workflow%3Atest-{ext}-maint)',
-                'ci_master+dlrelease': f'[![master+Released Datalad]({e.ci_badge})]({e.ci_link})',
+                'ci_develop+dlrelease': f'[![develop+Released Datalad]({e.ci_badge})]({e.ci_link})',
                 'codecov':             f'[![codecov.io](https://codecov.io/github/{e.githubdash}/coverage.svg?branch=master)](https://codecov.io/github/{e.githubdash}?branch=master)',
                 'issues_restime':      f'[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Average time to resolve an issue")',
                 'issues_open':         f'[![Percentage of issues still open](http://isitmaintained.com/badge/open/{e.githubdash}.svg)](http://isitmaintained.com/project/{e.githubdash} "Percentage of issues still open")',
@@ -236,6 +241,30 @@ def main(extensions):
     generate_README(ext_specs)
 
 
+def add_default_branch():
+    # helper to add default branch if differs from 'master'
+    import json
+    import ruamel.yaml
+    from urllib.request import Request, urlopen
+    yaml = ruamel.yaml.YAML()  # defaults to round-trip if no parameters given
+
+    with open(op.join(top_path, "extensions.yaml")) as f:
+        conf = yaml.load(f.read())
+    for name, rec in conf['extensions'].items():
+        rec_tuned = rec.copy()
+        rec_tuned['name'] = name
+        ed = ExtensionSpec(rec_tuned)
+        req = Request(f'https://api.github.com/repos/{ed.github}',
+                     headers={'Accept': 'application/vnd.github+json'})
+        with urlopen(req) as r:
+            b = json.load(r)['default_branch']
+        # reassign only if not "default default" i.e. master
+        if b != DEFAULT_BRANCH:
+            rec['branch'] = b
+    with open(op.join(top_path, "extensions.yaml"), "w") as f:
+        yaml.dump(conf, f)
+
+
 def load_ext_specs():
     with open(op.join(top_path, "extensions.yaml")) as f:
         spec = yaml.load(f.read(), Loader=yaml.BaseLoader)
@@ -253,4 +282,5 @@ def load_ext_specs():
 
 
 if __name__ == "__main__":
+    # add_default_branch()
     main(sys.argv[1:])
