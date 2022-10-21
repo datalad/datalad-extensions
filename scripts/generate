@@ -74,25 +74,42 @@ class ExtensionSpec(dict):
         return self.get('tester', 'pytest')
 
     @property
+    def ci(self):
+        return self.get("ci", 'Travis').lower().split(':', 1)[0]
+
+    # unfortunately there is no badge across multiple workflows on github
+    # and for now encode specific workflow in ci
+    @property
+    def ci_workflow(self):
+        # ok to error out -- so we do not keep errors in spec
+        return self.get("ci", 'Travis').lower().split(':', 1)[1]
+
+    @property
     def ci_badge(self):
-        ci = self.get('ci', 'Travis').lower()
+        ci = self.ci
         if ci  == 'travis':
             return f"https://travis-ci.com/{self.githubdash}.svg?branch={self.branch}"
         elif ci == 'appveyor':
             return f"https://ci.appveyor.com/api/projects/status/github/{self.github}?" \
                    f"branch={self.branch}&svg=true"
+        elif ci == 'github':
+            return f"https://github.com/{self.githubdash}/actions/workflows/{self.ci_workflow}.yml/badge.svg?branch={self.branch}"
         else:
-            raise RuntimeError("Unknown Ci specification: %s" % ci)
+            raise ValueError("Unknown Ci specification: %s" % ci)
 
     @property
     def ci_link(self):
-        ci = self.get('ci', 'Travis').lower()
+        ci = self.ci
         if ci == 'travis':
             return f"https://travis-ci.com/github/{self.githubdash}"
         elif ci == 'appveyor':
             user = self.get('ci-user')
             return f"https://ci.appveyor.com/project/{user}/{self.githubname}/" \
                    f"branch/{self.branch}"
+        elif ci == 'github':
+            return f'https://github.com/{self.githubdash}/actions/workflows/{self.ci_workflow}.yml?query=branch%3A{self.branch}'
+        else:
+            raise ValueError("Unknown Ci specification: %s" % ci)
 
     #def __getattribute__(self, item):
     #    return self[item]
