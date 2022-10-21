@@ -88,7 +88,7 @@ class ExtensionSpec(dict):
     def ci_link(self):
         ci = self.get('ci', 'Travis').lower()
         if ci == 'travis':
-            return "https://travis-ci.com/github/{self.githubdash}"
+            return f"https://travis-ci.com/github/{self.githubdash}"
         elif ci == 'appveyor':
             user = self.get('ci-user')
             return f"https://ci.appveyor.com/project/{user}/{self.githubname}/" \
