@@ -202,7 +202,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
         write_row(['---']*len(columns))
         # TODO: link to per-extension cron-github-CI results
         https_extension = "https://github.com/datalad/datalad-extensions"
-        for ext, e in ext_specs.items():
+        for ext, e in sorted(ext_specs.items()):
             entry = {
                 'ref': f"[{ext}](https://github.com/{e.github})",
                 'release_github':      f'[![?](https://img.shields.io/github/release/{e.githubdash}.svg)](https://GitHub.com/{e.githubdash}/releases/)',
