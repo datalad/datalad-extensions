@@ -71,8 +71,8 @@ jobs:
       # depending on it.
       run: |
         pip install pytest pytest-cov pytest-xdist nose vcrpy mock coverage
-    - name: Install APT depends for the extension
-      run: sudo eatmydata apt-get install singularity-container
+    - name: Install singularity
+      run: scripts/ci/install-singularity.sh
 
     - name: WTF!?
       run: |
