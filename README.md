@@ -17,11 +17,19 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
 ## DataLad Status
 
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
- [![DataLad PyPI version fury.io](https://badge.fury.io/py/datalad.svg)](https://pypi.python.org/pypi/datalad/)
- ![Conda?](https://anaconda.org/conda-forge/datalad/badges/version.svg)
+[![Anaconda](https://anaconda.org/conda-forge/datalad/badges/version.svg)](https://anaconda.org/conda-forge/datalad)
+[![Arch (AUR)](https://repology.org/badge/version-for-repo/aur/datalad.svg?header=Arch%20%28%41%55%52%29)](https://repology.org/project/datalad/versions)
+[![Debian Stable](https://badges.debian.net/badges/debian/stable/datalad/version.svg)](https://packages.debian.org/stable/datalad)
+[![Debian Unstable](https://badges.debian.net/badges/debian/unstable/datalad/version.svg)](https://packages.debian.org/unstable/datalad)
+[![Fedora Rawhide package](https://repology.org/badge/version-for-repo/fedora_rawhide/datalad.svg?header=Fedora%20%28rawhide%29)](https://repology.org/project/datalad/versions)
+[![Gentoo (::science)](https://repology.org/badge/version-for-repo/gentoo_ovl_science/datalad.svg?header=Gentoo%20%28%3A%3Ascience%29)](https://repology.org/project/datalad/versions) 
+[![PyPI package](https://repology.org/badge/version-for-repo/pypi/datalad.svg?header=PyPI)](https://repology.org/project/datalad/versions)
+
  - CI:
-   [![Travis tests status](https://travis-ci.com/datalad/datalad.png?branch=master)](https://travis-ci.com/datalad/datalad)
-   [![Build status](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
+   [![Travis maint](https://app.travis-ci.com/datalad/datalad.svg?branch=maint)](https://app.travis-ci.com/datalad/datalad)
+   [![Travis master](https://app.travis-ci.com/datalad/datalad.svg?branch=master)](https://app.travis-ci.com/datalad/datalad)
+   [![Appveyor maint](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=maint&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/maint)
+   [![Appveyor master](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
    [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
  - Misc:
    [![codecov.io](https://codecov.io/github/datalad/datalad/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad?branch=master)
