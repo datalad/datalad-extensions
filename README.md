@@ -16,6 +16,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
 
 ## DataLad Status
 
+- Distributions: 
  [![DataLad GitHub release](https://img.shields.io/github/release/datalad/datalad.svg)](https://GitHub.com/datalad/datalad/releases/)
 [![Anaconda](https://anaconda.org/conda-forge/datalad/badges/version.svg)](https://anaconda.org/conda-forge/datalad)
 [![Arch (AUR)](https://repology.org/badge/version-for-repo/aur/datalad.svg?header=Arch%20%28%41%55%52%29)](https://repology.org/project/datalad/versions)
@@ -31,6 +32,8 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
    [![Appveyor maint](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=maint&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/maint)
    [![Appveyor master](https://ci.appveyor.com/api/projects/status/github/datalad/datalad?branch=master&svg=true)](https://ci.appveyor.com/project/mih/datalad/branch/master)
    [![Documentation](https://readthedocs.org/projects/datalad/badge/?version=latest)](http://datalad.rtfd.org)
+   [![Extensions](https://github.com/datalad/datalad/actions/workflows/test_extensions.yml/badge.svg)](https://github.com/datalad/datalad/actions/workflows/test_extensions.yml)
+   [![Linters](https://github.com/datalad/datalad/actions/workflows/lint.yml/badge.svg)](https://github.com/datalad/datalad/actions/workflows/lint.yml)
  - Misc:
    [![codecov.io](https://codecov.io/github/datalad/datalad/coverage.svg?branch=master)](https://codecov.io/github/datalad/datalad?branch=master)
 
