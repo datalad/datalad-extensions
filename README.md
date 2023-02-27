@@ -15,6 +15,7 @@ This is a "dashboard" of various CIs of DataLad, its extensions, and underlying
      [![Ubuntu](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20Ubuntu/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+Ubuntu%22)
     [![macOS](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20macOS/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+macOS%22)
     [![Windows](https://github.com/datalad/git-annex/workflows/Build%20git-annex%20on%20Windows/badge.svg)](https://github.com/datalad/git-annex/actions?query=workflow%3A%22Build+git-annex+on+Windows%22)
+    [![Clients](https://raw.githubusercontent.com/datalad/git-annex-ci-client-jobs/master/badges/.all-clients.svg)](https://github.com/datalad/git-annex#client-tests)
 
 ## DataLad Status
 
