@@ -41,6 +41,7 @@ extensions:
     cron_time: 25 02 * * *
     ci: AppVeyor
     ci-user: mih
+    branch: main
   datalad_fuse:
     cron_time: 30 01 * * *
     ci: github:test
