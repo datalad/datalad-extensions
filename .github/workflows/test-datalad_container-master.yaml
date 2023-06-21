@@ -82,4 +82,4 @@ jobs:
         mkdir -p __testhome__
         cd __testhome__
 
-        python -m pytest -s -v  --cov=datalad --cov=datalad_container --pyargs datalad_container
+        python -m pytest -vv --cov=datalad --cov=datalad_container --pyargs datalad_container
