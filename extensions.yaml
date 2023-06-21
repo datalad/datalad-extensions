@@ -26,7 +26,6 @@ extensions:
     cron_time: 00 01 * * *
     ci: AppVeyor
     ci-user: mih
-    tester: nose
   datalad_catalog:
     cron_time: 50 01 * * *
     branch: main
@@ -55,7 +54,6 @@ extensions:
     cron_time: 00 02 * * *
     ci: AppVeyor
     ci-user: mih
-    tester: nose
  # disabled since not actively developed etc
  #datalad_webapp:
  # pypi: datalad-webapp
