@@ -65,13 +65,14 @@ extensions:
     ci: AppVeyor
     ci-user: mih
     branch: main
-  datalad_mihextras:
-    github: mih/datalad-mihextras
-    cron_time: 40 02 * * *
-    ci: AppVeyor
-    ci-user: mih
-    tester: nose
-    branch: main
+# Needs a release https://github.com/mih/datalad-mihextras/issues/41
+#  datalad_mihextras:
+#    github: mih/datalad-mihextras
+#    cron_time: 40 02 * * *
+#    ci: AppVeyor
+#    ci-user: mih
+#    tester: nose
+#    branch: main
   datalad_next:
     cron_time: 00 05 * * *
     ci: AppVeyor
