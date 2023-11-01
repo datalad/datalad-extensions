@@ -87,12 +87,3 @@ extensions:
     ci: AppVeyor
     ci-user: mih
     tester: nose
-  datalad_gooey:
-    apt_depends: [xvfb]
-    extra_setup_steps:
-    - name: Qt dependencies
-      uses: tlambert03/setup-qt-libs@v1
-    cron_time: 00 06 * * *
-    ci: AppVeyor
-    ci-user: mih
-    branch: main
