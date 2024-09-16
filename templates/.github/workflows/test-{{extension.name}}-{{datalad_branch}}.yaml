@@ -29,9 +29,11 @@ jobs:
         # https://github.com/datalad/datalad/pull/4640
         annex-install-scenario: [neurodebian, datalad-git-annex-latest]
         datalad-install-scenario: [plain]
+{% if datalad_branch == 'maint' %}
         include:
           - annex-install-scenario: neurodebian
             datalad-install-scenario: with-datalad-next-release
+{% endif %}
       fail-fast: false
 
     steps:
@@ -67,13 +69,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install https://github.com/datalad/datalad/archive/{{ datalad_branch }}.zip
-{% if datalad_branch == 'maint' %}
     - name: Install datalad-next
       if: matrix.datalad-install-scenario == 'with-datalad-next-release'
       run: |
         pip install datalad-next
         git config --global --add datalad.extensions.load next
-{% endif %}
     - name: Install {{ extension.name }} extension from PyPI ([devel,test,tests])
       run: |
         pip install {{ extension.pypi }}[devel,test,tests]
