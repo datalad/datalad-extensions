@@ -44,6 +44,7 @@ jobs:
         bash <(wget -q -O- http://neuro.debian.net/_files/neurodebian-travis.sh)
         sudo apt-get update -qq
         sudo apt-get install eatmydata python3-pip
+        sudo python3 -m pip config set global.break-system-packages true
         sudo pip install datalad-installer
         # just not to change the name from what we had already
         case "${{ matrix.annex-install-scenario }}" in
