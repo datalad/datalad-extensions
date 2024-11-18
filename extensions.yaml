@@ -48,8 +48,8 @@ extensions:
   datalad_metalad:
     pypi: datalad-metalad
     cron_time: 40 01 * * *
-  datalad_crawler:
-    cron_time: 00 02 * * *
+  #datalad_crawler:
+  #  cron_time: 00 02 * * *
   datalad_osf:
     cron_time: 00 02 * * *
     ci: AppVeyor
