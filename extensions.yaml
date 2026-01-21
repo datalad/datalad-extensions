@@ -60,11 +60,12 @@ extensions:
  # package: datalad_webapp
  # tester: pytest
  # cron_time: '20 02 * * *'
-  datalad_ukbiobank:
-    cron_time: 00 03 * * *
-    ci: AppVeyor
-    ci-user: mih
-    branch: main
+# removed due to repeated inquiries from ukbiobank team
+#  datalad_ukbiobank:
+#    cron_time: 00 03 * * *
+#    ci: AppVeyor
+#    ci-user: mih
+#    branch: main
 # Needs a release https://github.com/mih/datalad-mihextras/issues/41
 #  datalad_mihextras:
 #    github: mih/datalad-mihextras
