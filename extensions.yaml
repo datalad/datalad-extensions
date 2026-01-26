@@ -80,6 +80,7 @@ extensions:
     ci-user: mih
     branch: main
   datalad_deprecated:
+    apt_depends: [libexempi-dev]
     cron_time: 00 04 * * *
     ci: AppVeyor
     ci-user: mih
