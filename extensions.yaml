@@ -47,6 +47,7 @@ extensions:
   # TODO: seek to provide pytest --libfuse testing as well, was split out
   datalad_metalad:
     pypi: datalad-metalad
+    apt_depends: [libexempi-dev]
     cron_time: 40 01 * * *
   #datalad_crawler:
   #  cron_time: 00 02 * * *
