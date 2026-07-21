@@ -26,11 +26,12 @@ extensions:
     cron_time: 00 01 * * *
     ci: AppVeyor
     ci-user: mih
-  datalad_catalog:
-    cron_time: 50 01 * * *
-    branch: main
-    ci: AppVeyor
-    ci-user: mih
+  # TODO: eventually might be fixed up, out of my control/hands ATM: https://github.com/datalad/datalad-catalog/issues/498
+  #datalad_catalog:
+  #  cron_time: 50 01 * * *
+  #  branch: main
+  #  ci: AppVeyor
+  #  ci-user: mih
   datalad_container:
     cron_time: 20 01 * * *
     extra_setup_steps:
